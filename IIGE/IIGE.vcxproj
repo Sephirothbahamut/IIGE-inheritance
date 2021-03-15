@@ -15,7 +15,6 @@
     <ClCompile Include="engine\core\Quaternion.cpp" />
     <ClCompile Include="engine\Object.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="utils\math\angle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\Collider.h" />
@@ -35,21 +34,6 @@
     <ClInclude Include="engine\Object.h" />
     <ClInclude Include="engine\Scene.h" />
     <ClInclude Include="engine\Sceneold.h" />
-    <ClInclude Include="utils\containers\indexed_container.h" />
-    <ClInclude Include="utils\containers\listed_array.h" />
-    <ClInclude Include="utils\containers\matrix.h" />
-    <ClInclude Include="utils\containers\polymorphic_storage.h" />
-    <ClInclude Include="utils\containers\vector_utils.h" />
-    <ClInclude Include="utils\cout_containers.h" />
-    <ClInclude Include="utils\cout_utilities.h" />
-    <ClInclude Include="utils\definitions.h" />
-    <ClInclude Include="utils\Logger.h" />
-    <ClInclude Include="utils\math\angle.h" />
-    <ClInclude Include="utils\math\bounded.h" />
-    <ClInclude Include="utils\math\constants.h" />
-    <ClInclude Include="utils\math\math.h" />
-    <ClInclude Include="utils\type_checks.h" />
-    <ClInclude Include="utils\variadic.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -86,11 +70,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../../../Libraries/SFML-2.5.1/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../../../Libraries/SFML-2.5.1/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

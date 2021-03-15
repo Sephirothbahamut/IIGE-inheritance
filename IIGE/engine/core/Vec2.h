@@ -1,9 +1,9 @@
 #pragma once
 #include <ostream>
 
-#include "../../utils/math/math.h"
-#include "../../utils/math/angle.h"
-#include "../../utils/cout_utilities.h"
+#include <utils/math/math.h>
+#include <utils/math/angle.h>
+#include <utils/cout_utilities.h>
 
 #include "Vec.h"
 

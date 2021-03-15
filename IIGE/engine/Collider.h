@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "../utils/containers/polymorphic_storage.h"
+#include <utils/containers/polymorphic_storage.h>
 
 #include "core/Vec2.h"
 

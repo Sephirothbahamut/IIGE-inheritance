@@ -6,8 +6,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <utils/containers/vector_utils.h>
+
 #include "core/Transform2.h"
-#include "../utils/containers/vector_utils.h"
 #include "Logger.h"
 #include "Collider.h"
 

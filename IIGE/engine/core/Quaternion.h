@@ -3,8 +3,8 @@
 
 #include "Explicit3.h"
 #include "Euler.h"
-#include "../../utils/math/angle.h"
-#include "../../utils/math/constants.h"
+#include <utils/math/angle.h>
+#include <utils/math/constants.h>
 
 
 namespace engine::core

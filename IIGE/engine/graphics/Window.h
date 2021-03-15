@@ -5,8 +5,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <utils/memory.h>
+
 #include "../compile_settings.h"
-#include "../../utils/memory.h"
 #include "../Logger.h"
 
 
@@ -31,7 +32,7 @@ namespace engine::graphics
 			Window(unsigned int width = 800, unsigned int height = 600, const char* window_name = "Window") : sf_window(sf::VideoMode{width, height}, window_name, sf::Style::Resize, sf::ContextSettings{0, 0, 8})
 				{
 
-				if constexpr (log_enabled) { engine::logger << Message::log("SFML Window created."); }
+				if constexpr (log_enabled) { engine::logger << utils::message::log("SFML Window created."); }
 				}
 
 			Window(const Window& copy) = delete;

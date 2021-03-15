@@ -1,7 +1,7 @@
 #pragma once
 #include "Explicit2.h"
-#include "../../utils/math/angle.h"
-#include "../../utils/cout_utilities.h"
+#include <utils/math/angle.h>
+#include <utils/cout_utilities.h>
 
 namespace engine::core
 	{

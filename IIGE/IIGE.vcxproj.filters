@@ -4,15 +4,6 @@
     <Filter Include="Modules">
       <UniqueIdentifier>{48fdaaa7-027d-4bef-8e8c-ffda364201e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Modules\utils">
-      <UniqueIdentifier>{15bfad29-ce76-485f-9284-465b8b328806}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Modules\utils\containers">
-      <UniqueIdentifier>{c4b5065a-c7b2-48b5-8d8d-f5eb8d3a9413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Modules\utils\math">
-      <UniqueIdentifier>{c496b9d9-9592-4b0f-8646-409e1786f8fc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Modules\engine">
       <UniqueIdentifier>{ba4aa644-a096-4420-9f93-ce59d2198553}</UniqueIdentifier>
     </Filter>
@@ -30,9 +21,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="utils\math\angle.cpp">
-      <Filter>Modules\utils\math</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\Euler.cpp">
       <Filter>Modules\engine\core</Filter>
     </ClCompile>
@@ -44,30 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\cout_containers.h">
-      <Filter>Modules\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\containers\matrix.h">
-      <Filter>Modules\utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\containers\listed_array.h">
-      <Filter>Modules\utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\definitions.h">
-      <Filter>Modules\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\containers\indexed_container.h">
-      <Filter>Modules\utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\math\angle.h">
-      <Filter>Modules\utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\cout_utilities.h">
-      <Filter>Modules\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\math\constants.h">
-      <Filter>Modules\utils\math</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\Euler.h">
       <Filter>Modules\engine\core</Filter>
     </ClInclude>
@@ -92,12 +56,6 @@
     <ClInclude Include="engine\core\Vec3.h">
       <Filter>Modules\engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="utils\math\math.h">
-      <Filter>Modules\utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\math\bounded.h">
-      <Filter>Modules\utils\math</Filter>
-    </ClInclude>
     <ClInclude Include="engine\graphics\Window.h">
       <Filter>Modules\engine\graphics</Filter>
     </ClInclude>
@@ -107,17 +65,8 @@
     <ClInclude Include="engine\Sceneold.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
-    <ClInclude Include="utils\variadic.h">
-      <Filter>Modules\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\type_checks.h">
-      <Filter>Modules\utils</Filter>
-    </ClInclude>
     <ClInclude Include="engine\Logger.h">
       <Filter>Modules\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\Logger.h">
-      <Filter>Modules\utils</Filter>
     </ClInclude>
     <ClInclude Include="engine\compile_settings.h">
       <Filter>Modules\engine</Filter>
@@ -131,14 +80,8 @@
     <ClInclude Include="engine\Loop.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
-    <ClInclude Include="utils\containers\vector_utils.h">
-      <Filter>Modules\utils\containers</Filter>
-    </ClInclude>
     <ClInclude Include="engine\Collider.h">
       <Filter>Modules\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\containers\polymorphic_storage.h">
-      <Filter>Modules\utils\containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

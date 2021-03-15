@@ -1,7 +1,7 @@
 #pragma once
 #include "Vec3.h"
-#include "../../utils/math/angle.h"
-#include "../../utils/math/constants.h"
+#include <utils/math/angle.h>
+#include <utils/math/constants.h>
 
 namespace engine::core
 	{

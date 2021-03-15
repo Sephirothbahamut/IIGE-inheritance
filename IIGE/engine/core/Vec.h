@@ -3,8 +3,9 @@
 #include <numeric>
 #include <algorithm>
 #include <array>
-#include "../../utils/cout_utilities.h"
-#include "../../utils/cout_containers.h"
+
+#include <utils/cout_utilities.h>
+#include <utils/cout_containers.h>
 
 namespace engine::core { template <typename T, size_t S> class Vec; }
 

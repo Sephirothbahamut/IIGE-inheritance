@@ -1,6 +1,6 @@
 #pragma once
-#include "../utils/containers/listed_array.h"
-#include "../utils/variadic.h"
+#include <utils/containers/listed_array.h>
+#include <utils/variadic.h>
 /*
 #include "Game_object.h"
 #include <vector>

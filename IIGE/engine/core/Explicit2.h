@@ -1,6 +1,8 @@
 #pragma once
+
+#include <utils/cout_utilities.h>
+
 #include "Vec2.h"
-#include "../../utils/cout_utilities.h"
 
 // Declared types in this file are more specific and only implement methods and operators
 // which make sense for that specific type

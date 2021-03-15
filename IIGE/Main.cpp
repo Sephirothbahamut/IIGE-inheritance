@@ -47,7 +47,7 @@ namespace example
 					iige::collisions::Collision
 						{
 						Collider_layer::Walls, 
-						[](iige::collisions::Data data) { iige::logger << iige::Message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
+						[](iige::collisions::Data data) { iige::logger << utils::message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
 						}
 					);
 				}
@@ -57,20 +57,20 @@ namespace example
 				{
 				movement.translation() += {0.f, 1.f};
 
-				//iige::logger << iige::Message::wrn("Object stepping");
+				//iige::logger << iige::utils::message::wrn("Object stepping");
 				if (stops_countdown == stop_moving)
 					{
-					//iige::logger << iige::Message::wrn("Stop moving!!!");
+					//iige::logger << iige::utils::message::wrn("Stop moving!!!");
 					//Move::disable();
 					}
 				if (stops_countdown == stop_drawing)
 					{
-					//iige::logger << iige::Message::wrn("Stop drawing!!!");
+					//iige::logger << iige::utils::message::wrn("Stop drawing!!!");
 					//Draw::disable();
 					}
 				if (stops_countdown == 0)
 					{
-					//iige::logger << iige::Message::wrn("Stop stepping!!!");
+					//iige::logger << iige::utils::message::wrn("Stop stepping!!!");
 					//Step::disable();
 					}
 				stops_countdown--;
@@ -129,7 +129,7 @@ int main()
 		engine::Loop loop(scene, window);
 		loop.run();
 		}
-	catch (const std::exception& e) { engine::logger.emplace(engine::Message::Type::err, e.what()); }
+	catch (const std::exception& e) { engine::logger.emplace(utils::message::Type::err, e.what()); }
 
 	return 0;
 	}

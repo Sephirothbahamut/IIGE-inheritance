@@ -1,7 +1,7 @@
 #pragma once
 #include "Explicit3.h"
 #include "Quaternion.h"
-#include "../../utils/cout_utilities.h"
+#include <utils/cout_utilities.h>
 
 namespace engine::core
 	{
