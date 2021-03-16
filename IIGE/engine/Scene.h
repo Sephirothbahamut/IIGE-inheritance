@@ -114,12 +114,12 @@ namespace engine
 
 				for (objects::Collide_discrete* collide : collide_discretes.enabled)
 					{
-					for (const collisions::Collision& collision : collide->collisions)
+					for (const collisions::Collision_discrete& collision : collide->collisions)
 						{
 						for (objects::Has_collision* other : collider_lists[collision.collider_list_id].enabled)
 							{
-							collisions::Result result = collide->collider_ptr->discrete_collision(collide->transform.position(), *(other->collider_ptr.get()), other->transform.position());
-							if (result.has_value()) { collision.callback(result.value()); }
+							bool result = collide->collider_ptr->collide(collide->transform.position, *(other->collider_ptr.get()), other->transform.position);
+							if (result) { collision.callback({other}); }
 							}
 						}
 					}

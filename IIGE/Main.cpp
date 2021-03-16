@@ -25,29 +25,37 @@ namespace example
 			sf::RectangleShape cs;
 
 		public:
-			Dummy(/*Engine required argument*/iige::Scene& scene, 
-				/*free user arguments*/iige::Transform2 transform, sf::Color color, float z, size_t stops_countdown, size_t stop_moving, size_t stop_drawing)
-				/*Engine required initializations*/: iige::Object(scene), iige::In_world(scene), iige::Move(scene), iige::Step(scene), iige::Draw(scene, z), iige::Has_collision(scene), iige::Collide_discrete(scene),
-				/*free user initializations*/ stops_countdown(stops_countdown), stop_moving(stop_moving), stop_drawing(stop_drawing)
+			Dummy(
+				/*Engine required argument*/
+				iige::Scene& scene, 
+				/*free user arguments*/
+				iige::Transform2 transform, sf::Color color, float z, size_t stops_countdown, size_t stop_moving, size_t stop_drawing
+			)
+				:
+				/*Engine required initializations*/
+				iige::Object(scene), iige::In_world(scene), iige::Move(scene), iige::Step(scene), iige::Draw(scene, z), 
+				iige::Has_collision(scene), iige::Collide_discrete(scene),
+				/*free user initializations*/ 
+				stops_countdown(stops_countdown), stop_moving(stop_moving), stop_drawing(stop_drawing)
 				{
 				this->transform = transform; //assign starting position
-				movement.translation() = {10.f, 0.f}; //assign some speed
+				movement.position = {10.f, 0.f}; //assign some speed
 
 				using namespace utils::angle::literals;
-				movement.rotation() = 10_deg;
+				movement.orientation = 10_deg;
 
 				cs.setSize({15.f, 8.f});
 				cs.setOrigin(cs.getSize().x / 2, cs.getSize().y / 2);
 				cs.setFillColor(color);
 
-				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(3);
+				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, 3);
 
 				iige::Collide_discrete::collisions.push_back
 					(
-					iige::collisions::Collision
+					iige::collisions::Collision_discrete
 						{
 						Collider_layer::Walls, 
-						[](iige::collisions::Data data) { iige::logger << utils::message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
+						[](iige::collisions::Other other) { iige::logger << utils::message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
 						}
 					);
 				}
@@ -55,7 +63,7 @@ namespace example
 
 			virtual void step() override
 				{
-				movement.translation() += {0.f, 1.f};
+				movement.position += {0.f, 1.f};
 
 				//iige::logger << iige::utils::message::wrn("Object stepping");
 				if (stops_countdown == stop_moving)
@@ -80,8 +88,8 @@ namespace example
 				{
 				iige::Transform2 interpolated = iige::Transform2::lerp(transform_previous, transform, interpolation);
 
-				cs.setPosition(interpolated.position().x, interpolated.position().y);
-				cs.setRotation(interpolated.rotation().angle.value);
+				cs.setPosition(interpolated.position.x, interpolated.position.y);
+				cs.setRotation(interpolated.orientation.value);
 				rt.draw(cs);
 				}
 		};
@@ -94,10 +102,10 @@ namespace example
 		public:
 			Wall_circ(iige::Scene& scene, iige::Vec2f pos, float radius) : iige::Object(scene), iige::In_world(scene), iige::Has_collision(scene), iige::Draw(scene), circ(radius)
 				{
-				transform.position() = pos;
+				transform.position = pos;
 				circ.setPosition(pos.x, pos.y);
 
-				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(radius);
+				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, radius);
 				Has_collision::enable(Collider_layer::Walls);
 				}
 			

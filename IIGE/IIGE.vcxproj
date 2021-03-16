@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="engine\Collider.cpp" />
     <ClCompile Include="engine\core\Euler.cpp" />
     <ClCompile Include="engine\core\Quaternion.cpp" />
     <ClCompile Include="engine\Object.cpp" />
@@ -20,8 +21,6 @@
     <ClInclude Include="engine\Collider.h" />
     <ClInclude Include="engine\compile_settings.h" />
     <ClInclude Include="engine\core\Euler.h" />
-    <ClInclude Include="engine\core\Explicit2.h" />
-    <ClInclude Include="engine\core\Explicit3.h" />
     <ClInclude Include="engine\core\Quaternion.h" />
     <ClInclude Include="engine\core\Transform2.h" />
     <ClInclude Include="engine\core\Transform3.h" />

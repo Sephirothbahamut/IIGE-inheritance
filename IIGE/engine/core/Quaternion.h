@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm> //std::min
 
-#include "Explicit3.h"
+#include "Vec3.h"
 #include "Euler.h"
 #include <utils/math/angle.h>
 #include <utils/math/constants.h>
@@ -24,7 +24,7 @@ namespace engine::core
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 			Quaternion() noexcept;
 			Quaternion(float x, float y, float z, float w) noexcept;
-			Quaternion(Vector3<float> v, float w) noexcept;
+			Quaternion(Vec3<float> v, float w) noexcept;
 			Quaternion& operator=(const Quaternion& copy);
 
 			static Quaternion identity() noexcept;
@@ -49,19 +49,19 @@ namespace engine::core
 			Euler_deg to_euler_deg() const noexcept;
 
 			// ROTATION
-			static Quaternion angle_axis(angle::rad rad, const Vector3<float>& axis) noexcept;
-			Quaternion(angle::rad rad, const Vector3<float>& axis) noexcept;
-			std::pair<angle::rad, Vector3<float>> to_angle_axis();
+			static Quaternion angle_axis(angle::rad rad, const Vec3<float>& axis) noexcept;
+			Quaternion(angle::rad rad, const Vec3<float>& axis) noexcept;
+			std::pair<angle::rad, Vec3<float>> to_angle_axis();
 
-			static Quaternion from_to_rotation(Vector3<float> from, Vector3<float> to) noexcept;
-			static Quaternion look_rotation(Vector3<float> forward, Vector3<float> upwards = Vector3<float>::up()) noexcept;
+			static Quaternion from_to_rotation(Vec3<float> from, Vec3<float> to) noexcept;
+			static Quaternion look_rotation(Vec3<float> forward, Vec3<float> upwards = Vec3<float>::up()) noexcept;
 			static Quaternion rotation_towards(Quaternion from, Quaternion to, float maxDegreesDelta);
 
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== =====               ACCESS                ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 
-			const Vector3<float> xyz() const noexcept;
+			const Vec3<float> xyz() const noexcept;
 
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== =====              OPERATORS              ===== ===== ===== ===== ===== ===== =====
@@ -89,7 +89,7 @@ namespace engine::core
 			Quaternion  normal()    const noexcept;
 			Quaternion& normalize() noexcept;
 
-			Vector3<float> operator*(const Vector3<float>& vector) const noexcept;
+			Vec3<float> operator*(const Vec3<float>& vector) const noexcept;
 
 			static Quaternion slerp(Quaternion a, Quaternion b, float t);
 

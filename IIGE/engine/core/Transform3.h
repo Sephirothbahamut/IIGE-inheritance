@@ -1,7 +1,9 @@
 #pragma once
-#include "Explicit3.h"
-#include "Quaternion.h"
+
 #include <utils/cout_utilities.h>
+
+#include "Quaternion.h"
+#include "Vec2.h"
 
 namespace engine::core
 	{
@@ -25,8 +27,6 @@ namespace engine::core
 
 			Vec3f    evaluate(const Vec3f& v)                 const noexcept { return v + vec; }
 			Vec3f&   apply(Vec3f& v)                          const noexcept { return v += vec; }
-			Point3f  evaluate(const Point3f& p)               const noexcept { return evaluate(p.v); }
-			Point3f& apply(Point3f& p)                        const noexcept { apply(p.v); return p; }
 
 			Translation3  operator+ (const Translation3& oth) const noexcept { return { vec + oth.vec }; }
 			Translation3& operator+=(const Translation3& oth)       noexcept { return *this = *this + oth; }
@@ -51,12 +51,6 @@ namespace engine::core
 
 			Vec3f     evaluate(const Vec3f& v)          const noexcept { return q * v; }
 			Vec3f&    apply(Vec3f& v)                   const noexcept { return v = q * v; }
-			Point3f   evaluate(const Point3f& p)        const noexcept { return evaluate(p.v); }
-			Point3f&  apply(Point3f& p)                 const noexcept { apply(p.v); return p; }
-			Vector3f  evaluate(const Vector3f& v)       const noexcept { return evaluate(v.v); }
-			Vector3f& apply(Vector3f& v)                const noexcept { apply(v.v); return v; }
-			Unit3f    evaluate(const Unit3f& u)         const noexcept { return evaluate(u.v); }
-			Unit3f&   apply(Unit3f& u)                  const noexcept { apply(u.v); return u; }
 
 			Rotation3  operator+ (const Rotation3& oth) const noexcept { return {}; } // TODO
 			Rotation3& operator+=(const Rotation3& oth)       noexcept { return *this = *this + oth; }
@@ -83,10 +77,6 @@ namespace engine::core
 
 			Vec3f     evaluate(const Vec3f& v)        const noexcept { return v * value; }
 			Vec3f&    apply(Vec3f& v)                 const noexcept { return v *= value; }
-			Point3f   evaluate(const Point3f& p)      const noexcept { return evaluate(p.v); }
-			Point3f&  apply(Point3f& p)               const noexcept { apply(p.v); return p; }
-			Vector3f  evaluate(const Vector3f& v)     const noexcept { return evaluate(v.v); }
-			Vector3f& apply(Vector3f& v)              const noexcept { apply(v.v); return v; }
 
 			Scaling3  operator+ (const Scaling3& oth) const noexcept { return { value * oth.value }; }
 			Scaling3& operator+=(const Scaling3& oth)       noexcept { return *this = *this + oth; }
@@ -127,15 +117,6 @@ namespace engine::core
 			// vec: translation | rotation | scale
 			Vec3f     evaluate(const Vec3f& v)    const noexcept { Vec3f ret{ v }; apply(ret); return ret; }
 			Vec3f&    apply(Vec3f& v)             const noexcept { return t.apply(r.apply(s.apply(v))); }
-			// point: translation | rotation | scale
-			Point3f   evaluate(const Point3f& p)  const noexcept { Point3f ret{ p }; apply(ret); return ret; }
-			Point3f&  apply(Point3f& p)           const noexcept { return t.apply(r.apply(s.apply(p))); }
-			// vector: rotation | scale
-			Vector3f  evaluate(const Vector3f& v) const noexcept { Vector3f ret{ v }; apply(ret); return ret; }
-			Vector3f& apply(Vector3f& v)          const noexcept { return r.apply(s.apply(v)); }
-			// unit vector: rotation
-			Unit3f    evaluate(const Unit3f& u)   const noexcept { return { r.evaluate(u) }; }
-			Unit3f&   apply(Unit3f& u)            const noexcept { return r.apply(u); }
 
 			Transform3  operator+ (const Transform3& oth) const noexcept
 				{

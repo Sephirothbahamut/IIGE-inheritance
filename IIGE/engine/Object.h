@@ -123,7 +123,7 @@ namespace engine::objects
 		public:
 			Collide_discrete(Scene& scene) : Object(scene), In_world(scene), Has_collision(scene) { enable(); }
 			~Collide_discrete() { disable(); }
-			collisions::Collisions_list collisions;
+			collisions::Collisions_list_discrete collisions;
 
 			void enable();
 			void disable();

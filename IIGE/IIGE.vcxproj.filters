@@ -30,15 +30,12 @@
     <ClCompile Include="engine\Object.cpp">
       <Filter>Modules\engine</Filter>
     </ClCompile>
+    <ClCompile Include="engine\Collider.cpp">
+      <Filter>Modules\engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\Euler.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Explicit2.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Explicit3.h">
       <Filter>Modules\engine\core</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\Quaternion.h">

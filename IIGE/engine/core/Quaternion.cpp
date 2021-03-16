@@ -8,7 +8,7 @@ namespace engine::core
 
 	Quaternion::Quaternion() noexcept : x(0), y(0), z(0), w(0) {}
 	Quaternion::Quaternion(float x, float y, float z, float w) noexcept : x(x), y(y), z(z), w(w) {}
-	Quaternion::Quaternion(Vector3<float> v, float w) noexcept : x(v.x), y(v.y), z(v.z), w(w) {}
+	Quaternion::Quaternion(Vec3<float> v, float w) noexcept : x(v.x), y(v.y), z(v.z), w(w) {}
 
 	Quaternion& Quaternion::operator=(const Quaternion& copy) { x = copy.x; y = copy.y; z = copy.z; w = copy.w; return *this; };
 
@@ -83,15 +83,15 @@ namespace engine::core
 	Quaternion::Quaternion(const Euler_deg& euler) noexcept : Quaternion(euler.to_rad()) {};
 	Euler_deg Quaternion::to_euler_deg() const noexcept { return to_euler_rad().to_deg(); }
 
-	Quaternion Quaternion::angle_axis(angle::rad rad, const Vector3<float>& axis) noexcept { return { rad, axis }; }
+	Quaternion Quaternion::angle_axis(angle::rad rad, const Vec3<float>& axis) noexcept { return { rad, axis }; }
 
-	Quaternion::Quaternion(angle::rad rad, const Vector3<float>& axis) noexcept
+	Quaternion::Quaternion(angle::rad rad, const Vec3<float>& axis) noexcept
 		{
 		if (axis.magnitude2() == 0.0f) { x = 0.f; y = 0.f; z = 0.f; w = 1.f; return; }
 
 		rad *= 0.5f;
 		rad *= 0.5f;
-		Vector3<float> ax(axis);
+		Vec3<float> ax(axis);
 		ax.normalize();
 		ax = ax * rad.sin();
 		x = ax.x;
@@ -102,31 +102,31 @@ namespace engine::core
 		normalize();
 		}
 
-	std::pair<angle::rad, Vector3<float>> Quaternion::to_angle_axis()
+	std::pair<angle::rad, Vec3<float>> Quaternion::to_angle_axis()
 		{
 		Quaternion q{ *this };
 		if (abs(w) > 1.0f) { q.normalize(); }
 		angle::rad angle{ angle::trigonometry::acos(q.w) * 2.0f }; // angle
 		float den = sqrtf(1.0f - float(double(q.w) * double(q.w)));
-		if (den > 0.0001f) { return { angle, Vector3<float>{q.x / den, q.y / den, q.z / den} }; }
+		if (den > 0.0001f) { return { angle, Vec3<float>{q.x / den, q.y / den, q.z / den} }; }
 		else
 			{
 			// This occurs when the angle is zero. 
 			// Not a problem: just set an arbitrary normalized axis.
-			return { angle, Vector3<float>{1.f, 0.f, 0.f} };
+			return { angle, Vec3<float>{1.f, 0.f, 0.f} };
 			}
 		}
 
-	Quaternion Quaternion::from_to_rotation(Vector3<float> from, Vector3<float> to) noexcept
+	Quaternion Quaternion::from_to_rotation(Vec3<float> from, Vec3<float> to) noexcept
 		{
 		return rotation_towards(look_rotation(from), look_rotation(to), (std::numeric_limits<float>::max)());
 		}
 
-	Quaternion Quaternion::look_rotation(Vector3<float> forward, Vector3<float> upwards) noexcept
+	Quaternion Quaternion::look_rotation(Vec3<float> forward, Vec3<float> upwards) noexcept
 		{
 		forward.normalize();
-		Vector3<float> right = Vector3<float>::cross(upwards, forward).normal();
-		upwards = Vector3<float>::cross(forward, right);
+		Vec3<float> right = Vec3<float>::cross(upwards, forward).normal();
+		upwards = Vec3<float>::cross(forward, right);
 		float m00 = right.x;
 		float m01 = right.y;
 		float m02 = right.z;
@@ -191,7 +191,7 @@ namespace engine::core
 	// ===== ===== ===== ===== ===== ===== =====               ACCESS                ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 
-	const Vector3<float> Quaternion::xyz() const noexcept { return { x, y, z }; }
+	const Vec3<float> Quaternion::xyz() const noexcept { return { x, y, z }; }
 
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== =====              OPERATORS              ===== ===== ===== ===== ===== ===== =====
@@ -247,7 +247,7 @@ namespace engine::core
 		}
 	Quaternion& Quaternion::normalize() noexcept { return *this = normal(); }
 
-	Vector3<float> Quaternion::operator*(const Vector3<float>& vector) const noexcept
+	Vec3<float> Quaternion::operator*(const Vec3<float>& vector) const noexcept
 		{
 		float num = x * 2.f;
 		float num2 = y * 2.f;
@@ -261,7 +261,7 @@ namespace engine::core
 		float num10 = w * num;
 		float num11 = w * num2;
 		float num12 = w * num3;
-		Vector3<float> result;
+		Vec3<float> result;
 		result.x = (1.f - (num5 + num6)) * vector.x + (num7 - num12) * vector.y + (num8 + num11) * vector.z;
 		result.y = (num7 + num12) * vector.x + (1.f - (num4 + num6)) * vector.y + (num9 - num10) * vector.z;
 		result.z = (num8 - num11) * vector.x + (num9 + num10) * vector.y + (1.f - (num4 + num5)) * vector.z;
@@ -283,7 +283,7 @@ namespace engine::core
 			return a;
 			}
 
-		float cosHalfAngle = a.w * b.w + Vector3<float>::dot(a.xyz(), b.xyz());
+		float cosHalfAngle = a.w * b.w + Vec3<float>::dot(a.xyz(), b.xyz());
 
 		if (cosHalfAngle >= 1.0f || cosHalfAngle <= -1.0f)
 			{// angle = 0.0f, so just return one input.

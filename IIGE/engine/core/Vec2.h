@@ -94,21 +94,26 @@ namespace engine::core
 			Vec2<T>& operator= (const utils::angle::rad angle)       noexcept { return *this = {angle.cos() * magnitude(), angle.sin() * magnitude()}; }
 
 			// VEC & VEC OPERATORS
-			Vec2<T>  operator+(const Vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
-			Vec2<T>  operator-(const Vec2<T>& oth) const noexcept { return {x - oth.x, y - oth.y}; }
-			Vec2<T>  operator*(const Vec2<T>& oth) const noexcept { return {x * oth.x, y * oth.y}; }
-			Vec2<T>  operator/(const Vec2<T>& oth) const noexcept { return {x / oth.x, y / oth.y}; }
+			Vec2<T>  operator+ (const Vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
+			Vec2<T>  operator- (const Vec2<T>& oth) const noexcept { return {x - oth.x, y - oth.y}; }
+			Vec2<T>  operator* (const Vec2<T>& oth) const noexcept { return {x * oth.x, y * oth.y}; }
+			Vec2<T>  operator/ (const Vec2<T>& oth) const noexcept { return {x / oth.x, y / oth.y}; }
+
+			Vec2<T>& operator+=(const Vec2<T>& oth)       noexcept { return *this = *this + oth; }
+			Vec2<T>& operator-=(const Vec2<T>& oth)       noexcept { return *this = *this - oth; }
+			Vec2<T>& operator*=(const Vec2<T>& oth)       noexcept { return *this = *this * oth; }
+			Vec2<T>& operator/=(const Vec2<T>& oth)       noexcept { return *this = *this / oth; }
+
+			bool     operator==(const Vec2<T>& oth) const noexcept { return x == oth.x && y == oth.y; }
+			bool     operator!=(const Vec2<T>& oth) const noexcept { return !(*this == oth); }
+
 			static T dot(const Vec2<T>& a, const Vec2<T>& b) noexcept { return a.x * b.x + a.y * b.y; }
 			static T distance(const Vec2<T>& a, const Vec2<T>& b) noexcept
-				{				T dx = a.x - b.x;
+				{
+				T dx = a.x - b.x;
 				T dy = a.y - b.y;
 				return std::sqrt(dx * dx + dy * dy);
 				}
-
-			Vec2<T>& operator+=(const Vec2<T>& oth) noexcept { return *this = *this + oth; }
-			Vec2<T>& operator-=(const Vec2<T>& oth) noexcept { return *this = *this - oth; }
-			Vec2<T>& operator*=(const Vec2<T>& oth) noexcept { return *this = *this * oth; }
-			Vec2<T>& operator/=(const Vec2<T>& oth) noexcept { return *this = *this / oth; }
 
 			// OTHER
 			static Vec2<T> lerp(const Vec2<T>& a, const Vec2<T>& b, T t) noexcept

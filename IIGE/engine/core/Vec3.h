@@ -89,17 +89,27 @@ namespace engine::core
 			Vec3<T>& operator= (const T n) noexcept { return normalize() *= n; }
 
 			// VEC & VEC OPERATORS
-			Vec3<T>  operator+(const Vec3<T>& oth) const noexcept { return {x + oth.x, y + oth.y, z + oth.z}; }
-			Vec3<T>  operator-(const Vec3<T>& oth) const noexcept { return {x - oth.x, y - oth.y, z - oth.z}; }
-			Vec3<T>  operator*(const Vec3<T>& oth) const noexcept { return {x * oth.x, y * oth.y, z * oth.z}; }
-			Vec3<T>  operator/(const Vec3<T>& oth) const noexcept { return {x / oth.x, y / oth.y, z / oth.z}; }
-			Vec3<T>  operator%(const Vec3<T>& oth) const noexcept //cross operator
+			Vec3<T>  operator+ (const Vec3<T>& oth) const noexcept { return {x + oth.x, y + oth.y, z + oth.z}; }
+			Vec3<T>  operator- (const Vec3<T>& oth) const noexcept { return {x - oth.x, y - oth.y, z - oth.z}; }
+			Vec3<T>  operator* (const Vec3<T>& oth) const noexcept { return {x * oth.x, y * oth.y, z * oth.z}; }
+			Vec3<T>  operator/ (const Vec3<T>& oth) const noexcept { return {x / oth.x, y / oth.y, z / oth.z}; }
+			Vec3<T>  operator% (const Vec3<T>& oth) const noexcept //cross operator
 				{
 				T tmp_x = (y * oth.z - z * oth.y);
 				T tmp_y = (x * oth.z - z * oth.x);
 				T tmp_z = (x * oth.y - y * oth.x);
 				return {tmp_x, tmp_y, tmp_z};
 				}
+
+			Vec3<T>& operator+=(const Vec3<T>& oth)       noexcept { return *this = *this + oth; }
+			Vec3<T>& operator-=(const Vec3<T>& oth)       noexcept { return *this = *this - oth; }
+			Vec3<T>& operator*=(const Vec3<T>& oth)       noexcept { return *this = *this * oth; }
+			Vec3<T>& operator/=(const Vec3<T>& oth)       noexcept { return *this = *this / oth; }
+			Vec3<T>& operator%=(const Vec3<T>& oth)       noexcept { return *this = *this % oth; }
+
+			bool     operator==(const Vec3<T>& oth) const noexcept { return x == oth.x && y == oth.y && z == oth.z; }
+			bool     operator!=(const Vec3<T>& oth) const noexcept { return !(*this == oth); }
+
 			static Vec3<T> cross(const Vec3<T>& a, const Vec3<T>& b) noexcept { return a % b; }
 			static T dot(const Vec3<T>& a, const Vec3<T>& b) noexcept { return a.x * b.x + a.y * b.y + a.z * b.z; }
 			static T distance2(const Vec3<T>& a, const Vec3<T>& b) noexcept
@@ -110,12 +120,6 @@ namespace engine::core
 				return dx * dx + dy * dy + dz * dz;
 				}
 			static T distance(const Vec3<T>& a, const Vec3<T>& b) noexcept { return std::sqrt(distance2(a, b)); }
-
-			Vec3<T>& operator+=(const Vec3<T>& oth) noexcept { return *this = *this + oth; }
-			Vec3<T>& operator-=(const Vec3<T>& oth) noexcept { return *this = *this - oth; }
-			Vec3<T>& operator*=(const Vec3<T>& oth) noexcept { return *this = *this * oth; }
-			Vec3<T>& operator/=(const Vec3<T>& oth) noexcept { return *this = *this / oth; }
-			Vec3<T>& operator%=(const Vec3<T>& oth) noexcept { return *this = *this % oth; }
 
 			// OTHER
 			static Vec3<T> lerp(const Vec3<T>& a, const Vec3<T>& b, T t) noexcept
