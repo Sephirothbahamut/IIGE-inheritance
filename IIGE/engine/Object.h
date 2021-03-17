@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <vector>
+#include <map>
 
 #include <SFML/Graphics.hpp>
 
@@ -52,7 +54,8 @@ namespace engine::objects
 			void enable();
 			void disable();
 
-			void movement_step() { transform_previous = transform; transform += movement; }
+			void movement_step() 
+				{ transform_previous = transform; transform += movement; }
 		};
 
 	class Step : public virtual Object
@@ -96,20 +99,29 @@ namespace engine::objects
 	class Has_collision : public virtual In_world
 		{
 		friend class Action_list<Has_collision>;
-		using Shape_ptr = std::unique_ptr<collisions::Shape>;
+		friend class Scene;
 		private:
+			using Shape_ptr = std::unique_ptr<collisions::Shape>;
+			struct Coll_list_subscr { Has_collision* obj; bool enabled; size_t index; size_t list_id; };
+
 			bool enabled = false;
 			size_t index = 0;
-			size_t list_id = 0;
+			std::unordered_map<size_t, Coll_list_subscr> collider_lists_subscribed;
+
+			void enable_list(size_t list_id);
+			void disable_list(size_t list_id);
 
 		public:
-			Has_collision(Scene& scene) : Object(scene), In_world(scene) {}
+			Has_collision(Scene& scene) : Object(scene), In_world(scene) { enable(); }
 			~Has_collision() { disable(); }
 
 			Shape_ptr collider_ptr{nullptr};
+			void collider_update() { collider_ptr->update(transform); }
 
-			void enable(size_t list_id);
+			void enable();
 			void disable();
+			void add_to_list(size_t list_id);
+			void remove_from_list(size_t list_id);
 		};
 
 	class Collide_discrete : public virtual Has_collision

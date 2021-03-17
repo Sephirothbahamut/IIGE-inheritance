@@ -1,7 +1,8 @@
 #pragma once
 
-#include <utils/math/angle.h>
 #include <utils/cout_utilities.h>
+
+#include <utils/math/angle.h>
 
 #include "Vec2.h"
 
@@ -13,6 +14,7 @@ namespace engine::core
 
 		public:
 			Transform2(Vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {}) noexcept : position(translation), orientation(rotation), size(scaling) {}
+			static Transform2 zero() { return {}; }
 
 			Vec2f             position{};
 			utils::angle::deg orientation{};
@@ -28,7 +30,10 @@ namespace engine::core
 			Vec2f&    transform  (      Vec2f& v)    const noexcept { return translate(rotate(scale(v))); }
 			Vec2f     transformed(const Vec2f& v)    const noexcept { Vec2f ret{v}; return transform(ret); }
 
-			Transform2  operator+ (const Transform2& oth) const noexcept { return {position + oth.position, orientation + oth.orientation, size * oth.size}; }
+			Transform2  operator+ (const Transform2& oth) const noexcept 
+				{
+				return {position + oth.position, orientation + oth.orientation, size * oth.size}; 
+				}
 			Transform2& operator+=(const Transform2& oth)       noexcept { return *this = *this + oth; }
 			Transform2  operator- ()                      const noexcept
 				{
@@ -37,6 +42,9 @@ namespace engine::core
 				return ret;
 				}
 			Transform2& operator--()                            noexcept { return *this = -(*this); }
+
+			bool     operator==(const Transform2& oth) const noexcept { return position == oth.position && orientation == oth.orientation && size == oth.size; }
+			bool     operator!=(const Transform2& oth) const noexcept { return !(*this == oth); }
 
 			Transform2  composite(const Transform2& oth)  const noexcept { return *this +  oth; }
 			Transform2& compose(const Transform2& oth)          noexcept { return *this += oth; }

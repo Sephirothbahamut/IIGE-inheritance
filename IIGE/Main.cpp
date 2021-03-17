@@ -38,17 +38,17 @@ namespace example
 				/*free user initializations*/ 
 				stops_countdown(stops_countdown), stop_moving(stop_moving), stop_drawing(stop_drawing)
 				{
+
+				//Movement
 				this->transform = transform; //assign starting position
 				movement.position = {10.f, 0.f}; //assign some speed
 
 				using namespace utils::angle::literals;
-				movement.orientation = 10_deg;
+				movement.orientation = 40_deg;
 
-				cs.setSize({15.f, 8.f});
-				cs.setOrigin(cs.getSize().x / 2, cs.getSize().y / 2);
-				cs.setFillColor(color);
-
+				//Collisions
 				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, 3);
+				collider_ptr->origin = {10.f, 0.f};
 
 				iige::Collide_discrete::collisions.push_back
 					(
@@ -58,6 +58,12 @@ namespace example
 						[](iige::collisions::Other other) { iige::logger << utils::message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
 						}
 					);
+
+
+				//Draw
+				cs.setSize({15.f, 8.f});
+				cs.setOrigin(cs.getSize().x, cs.getSize().y);
+				cs.setFillColor(color);
 				}
 
 
@@ -106,7 +112,7 @@ namespace example
 				circ.setPosition(pos.x, pos.y);
 
 				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, radius);
-				Has_collision::enable(Collider_layer::Walls);
+				Has_collision::add_to_list(Collider_layer::Walls);
 				}
 			
 			virtual void draw(sf::RenderTarget& rt, float interpolation) override

@@ -32,7 +32,7 @@ namespace engine
 			std::vector<T*> enabled;
 
 			void enable(T* element) { to_enable.push_back(element); }
-			void disable(T* element) { to_disable.push_back(element->index); }
+			void disable(size_t index) { to_disable.push_back(index); }
 
 			void disable_enable_pass()
 				{
@@ -74,9 +74,10 @@ namespace engine
 			Action_list<objects::Move>             moving_entities;
 			Action_list<objects::Draw>             draws;
 			Action_list<objects::Step>             steps;
-			Action_list<objects::Collide_discrete> collide_discretes;
 
-			std::vector<Action_list<objects::Has_collision>> collider_lists;
+			Action_list<objects::Has_collision> have_collisions; //stores all objects with a collision, passive or active
+			Action_list<objects::Collide_discrete> collide_discretes;//stores all objects that actively look for collisions and run callbacks
+			std::vector<Action_list<objects::Has_collision::Coll_list_subscr>> collider_lists; //stores subscriptions of have_collision objects to various lists
 
 		public:
 			template <typename T, typename ...Args>
@@ -103,23 +104,27 @@ namespace engine
 				window.sf_window.clear();
 
 				for (objects::Draw* draw : draws.enabled) { draw->draw(window.sf_window, interpolation); }
-
+				for (objects::Has_collision* e : have_collisions.enabled) { e->collider_ptr->draw(window.sf_window); }
 				window.sf_window.display();
 				}
 
 			void collisions()
 				{
-				for (Action_list<objects::Has_collision>& list : collider_lists) { list.disable_enable_pass(); }
+				have_collisions.disable_enable_pass();
+				for (objects::Has_collision* collide : have_collisions.enabled) { collide->collider_update(); }
+				for (Action_list<objects::Has_collision::Coll_list_subscr>& list : collider_lists) { list.disable_enable_pass(); }
+
 				collide_discretes.disable_enable_pass();
+
 
 				for (objects::Collide_discrete* collide : collide_discretes.enabled)
 					{
 					for (const collisions::Collision_discrete& collision : collide->collisions)
 						{
-						for (objects::Has_collision* other : collider_lists[collision.collider_list_id].enabled)
+						for (objects::Has_collision::Coll_list_subscr* subscr: collider_lists[collision.collider_list_id].enabled)
 							{
-							bool result = collide->collider_ptr->collide(collide->transform.position, *(other->collider_ptr.get()), other->transform.position);
-							if (result) { collision.callback({other}); }
+							bool result = collide->collider_ptr->collide(*(subscr->obj->collider_ptr.get()));
+							if (result) { collision.callback({subscr->obj}); }
 							}
 						}
 					}

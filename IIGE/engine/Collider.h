@@ -3,6 +3,8 @@
 #include <optional>
 #include <functional>
 
+#include <SFML/Graphics.hpp>
+
 #include <utils/containers/polymorphic_storage.h>
 
 #include "core/Transform2.h"
@@ -44,67 +46,76 @@ namespace engine
 					Shape(Type type, const core::Vec2f& origin) : type{type}, origin{origin} {}
 					Type type;
 					
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poin& other, const core::Transform2& oth_trn) const = 0;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Circ& other, const core::Transform2& oth_trn) const = 0;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Line& other, const core::Transform2& oth_trn) const = 0;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poly& other, const core::Transform2& oth_trn) const = 0;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::AABB& other, const core::Transform2& oth_trn) const = 0;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Rect& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poin& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Circ& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Line& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poly& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::AABB& other, const core::Transform2& oth_trn) const = 0;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Rect& other, const core::Transform2& oth_trn) const = 0;
+					virtual bool   _collide_discrete  (const shapes::Poin& other) const = 0;
+					virtual bool   _collide_discrete  (const shapes::Circ& other) const = 0;
+					virtual bool   _collide_discrete  (const shapes::Line& other) const = 0;
+					virtual bool   _collide_discrete  (const shapes::Poly& other) const = 0;
+					virtual bool   _collide_discrete  (const shapes::AABB& other) const = 0;
+					virtual bool   _collide_discrete  (const shapes::Rect& other) const = 0;
 
 				public:
 					core::Vec2f origin;
 
-					Result collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const Shape& other, const core::Transform2& oth_trn) const;
-					bool collide(const core::Transform2& trn, const Shape& other, const core::Transform2& oth_trn) const;
+					bool collide(const Shape& other) const;
+
+					virtual void update(const core::Transform2& transform) = 0;
+					virtual void draw(sf::RenderTarget& rt) const = 0;
 				};
 
 			class Poin : public Shape
 				{
 				friend class Poin; friend class Circ; friend class Line; friend class AABB; friend class Rect;
 				private:
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poin& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Circ& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Line& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poly& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::AABB& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Rect& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poin& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Circ& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Line& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poly& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::AABB& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Rect& other, const core::Transform2& oth_trn) const;
+					core::Vec2f global_position{};
+
+					virtual bool   _collide_discrete  (const shapes::Poin& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Circ& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Line& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Poly& other) const override;
+					virtual bool   _collide_discrete  (const shapes::AABB& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Rect& other) const override;
 
 				public:
 					Poin(const core::Vec2f& origin) : Shape{Type::Poin, origin} {}
+
+					virtual void update(const core::Transform2& transform) override { global_position = transform.transformed(origin); }
+					virtual void draw(sf::RenderTarget& rt) const override
+						{
+						sf::CircleShape cs(2);
+						cs.setFillColor(sf::Color::Red);
+						cs.setPosition(global_position.x, global_position.y);
+						rt.draw(cs);
+						}
 				};
 
 			class Circ : public Shape
 				{
 				friend class Poin; friend class Circ; friend class Line; friend class AABB; friend class Rect;
 				private:
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poin& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Circ& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Line& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Poly& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::AABB& other, const core::Transform2& oth_trn) const;
-					virtual Result _collide_continuous(const core::Transform2& trn_beg, const core::Transform2& trn_end, const shapes::Rect& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poin& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Circ& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Line& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Poly& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::AABB& other, const core::Transform2& oth_trn) const;
-					virtual bool   _collide_discrete  (const core::Transform2& trn,                                      const shapes::Rect& other, const core::Transform2& oth_trn) const;
+					core::Vec2f global_position{};
+
+					virtual bool   _collide_discrete  (const shapes::Poin& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Circ& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Line& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Poly& other) const override;
+					virtual bool   _collide_discrete  (const shapes::AABB& other) const override;
+					virtual bool   _collide_discrete  (const shapes::Rect& other) const override;
 					
 				public:
 					Circ(const core::Vec2f& origin, float radius) : Shape{Type::Circ, origin}, radius{radius} {}
 					float radius;
+
+					virtual void update(const core::Transform2& transform) override { global_position = transform.transformed(origin); }
+					virtual void draw(sf::RenderTarget& rt) const override
+						{
+						sf::CircleShape cs(radius);
+						cs.setOutlineColor(sf::Color::Red);
+						cs.setOutlineThickness(1);
+						cs.setFillColor(sf::Color::Transparent);
+						cs.setPosition(global_position.x, global_position.y);
+						cs.setOrigin(radius, radius);
+						rt.draw(cs);
+						}
 				};
 
 			class Line : public Shape

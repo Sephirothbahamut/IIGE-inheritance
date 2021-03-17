@@ -55,6 +55,7 @@ namespace engine::core
 			static Vec2<T> right() noexcept { return rr(); }
 			static Vec2<T> left()  noexcept { return ll(); }
 			static Vec2<T> down()  noexcept { return dw(); }
+			static Vec2<T> zero()  noexcept { return {}; }
 
 			T x = 0, y = 0;
 
