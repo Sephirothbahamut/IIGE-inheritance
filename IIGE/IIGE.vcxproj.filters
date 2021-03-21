@@ -80,5 +80,8 @@
     <ClInclude Include="engine\Collider.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
+    <ClInclude Include="engine\resources_manager.h">
+      <Filter>Modules\engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

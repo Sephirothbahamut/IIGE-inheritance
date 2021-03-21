@@ -18,13 +18,14 @@ namespace engine
 			Scene* scene{nullptr};
 			graphics::Window* window{nullptr};
 
-			const float frames_per_second = 1.f;
-			const sf::Time fixed_delta_time{sf::seconds(1.f / frames_per_second)};
+			const float steps_per_second = 1.f;
+			const sf::Time fixed_delta_time{sf::seconds(1.f / steps_per_second)};
 			const size_t max_frameskip = 5;
 
 		public:
-			Loop(Scene& scene, graphics::Window& window) noexcept : scene(&scene), window(&window) 
+			Loop(Scene& scene, graphics::Window& window, float steps_per_second = 1.f) noexcept : scene(&scene), window(&window), steps_per_second(steps_per_second)
 				{}
+
 
 			void run() 
 				{

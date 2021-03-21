@@ -12,6 +12,7 @@ namespace engine::collisions::shapes
 			case Type::Poly: return _collide_discrete(reinterpret_cast<const Poly&>(other));
 			case Type::AABB: return _collide_discrete(reinterpret_cast<const AABB&>(other));
 			case Type::Rect: return _collide_discrete(reinterpret_cast<const Rect&>(other));
+			default: return false;
 			}
 		}
 
