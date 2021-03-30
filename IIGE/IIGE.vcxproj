@@ -27,6 +27,7 @@
     <ClInclude Include="engine\core\Vec.h" />
     <ClInclude Include="engine\core\Vec2.h" />
     <ClInclude Include="engine\core\Vec3.h" />
+    <ClInclude Include="engine\Events.h" />
     <ClInclude Include="engine\graphics\Window.h" />
     <ClInclude Include="engine\Logger.h" />
     <ClInclude Include="engine\Loop.h" />

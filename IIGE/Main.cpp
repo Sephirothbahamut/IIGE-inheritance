@@ -14,7 +14,7 @@
 
 namespace iige { using namespace engine; using namespace engine::core; using namespace engine::objects; }
 
-const float steps_per_second = 30.f;
+const float steps_per_second = 5.f;
 
 namespace example
 	{
