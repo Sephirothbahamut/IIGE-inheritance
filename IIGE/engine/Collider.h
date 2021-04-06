@@ -5,8 +5,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <utils/containers/polymorphic_storage.h>
-
 #include "core/Transform2.h"
 #include "core/Vec2.h"
 
