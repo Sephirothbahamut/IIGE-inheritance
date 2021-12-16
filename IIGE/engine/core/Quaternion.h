@@ -1,4 +1,8 @@
 #pragma once
+
+//TODO replace with utils/math/*
+//TODO test math for real
+
 #include <algorithm> //std::min
 
 #include "Vec3.h"

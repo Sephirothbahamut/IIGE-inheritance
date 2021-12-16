@@ -62,9 +62,6 @@
     <ClInclude Include="engine\Sceneold.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Logger.h">
-      <Filter>Modules\engine</Filter>
-    </ClInclude>
     <ClInclude Include="engine\compile_settings.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>

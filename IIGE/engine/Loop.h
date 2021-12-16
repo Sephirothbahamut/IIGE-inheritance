@@ -1,21 +1,21 @@
 #pragma once
-#include <thread>
+#include <utils/logger.h>
 
 #include <SFML/System.hpp>
 
 #include "graphics/Window.h"
 #include "Scene.h"
 #include "Object.h"
-#include "Logger.h"
 
 namespace engine
 	{
+	template <typename Scene_t>
 	class Loop
 		{
 		private:
 			static constexpr bool log_enabled = true;
 
-			Scene* scene{nullptr};
+			Scene_t* scene{nullptr};
 			graphics::Window* window{nullptr};
 
 			const float steps_per_second = 1.f;
@@ -23,14 +23,14 @@ namespace engine
 			const size_t max_frameskip = 5;
 
 		public:
-			Loop(Scene& scene, graphics::Window& window, float steps_per_second = 1.f) noexcept : scene(&scene), window(&window), steps_per_second(steps_per_second)
+			Loop(Scene_t& scene, graphics::Window& window, float steps_per_second = 1.f) noexcept : scene(&scene), window(&window), steps_per_second(steps_per_second)
 				{}
 
 
-			void run() 
+			void run()
 				{
 				// https://dewitters.com/dewitters-gameloop/
-				Scene& scene = *this->scene;
+				Scene_t& scene = *this->scene;
 				graphics::Window& window = *this->window;
 
 				sf::Clock clock;
@@ -38,44 +38,33 @@ namespace engine
 				size_t step_loops = 0;
 				float interpolation = 0;
 
-				//TODO temporary fps counter, do better
-				/*std::atomic_uint64_t fps = 0;
-				std::atomic_bool fps_counter_running = true;
-				std::thread fps_counter_thread([&]()
-					{
-					while (fps_counter_running)
-						{
-						sf::sleep(sf::seconds(1)); 
-						uint64_t tmpfps = fps; fps = 0; //TODO i know it's wrong, i dont care if i lose a couple frames counted once every meteor that hits the planet
-						logger << Message(std::to_string(tmpfps));
-						}
-					});*/
+				sf::Clock fps_clock;
+				uint32_t frames_counter = 0;
 
 				while (window.is_open())
 					{
-					step_loops = 0;
-
-					while (clock.getElapsedTime() > next_step_time && step_loops < max_frameskip)
+					if (fps_clock.getElapsedTime() > sf::seconds(1))
 						{
-						sf::Event event;
+						utils::globals::logger.log("FPS: " + std::to_string(frames_counter / fps_clock.restart().asSeconds()) + " with #" + std::to_string(scene.active_objects_count()) + " active objects.");
+						frames_counter = 0;
+						}
+					while (clock.getElapsedTime() > next_step_time && step_loops < max_frameskip)
+						{sf::Event event;
 						while (window.poll_event(event)) {}
 
+						scene.update();
 						scene.movement_step();
 						scene.collisions();
 						scene.step();
 
 						next_step_time += fixed_delta_time;
-						//step_loops++;
 						}
 
 					interpolation = (clock.getElapsedTime() + fixed_delta_time - next_step_time) / fixed_delta_time;
 
+					frames_counter++;
 					scene.draw(window, interpolation);
-					//fps++;
 					}
-
-				//fps_counter_running = false;
-				//fps_counter_thread.join();
 				}
 		};
 	}

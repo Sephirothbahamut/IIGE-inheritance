@@ -3,11 +3,24 @@
 #include <vector>
 #include <algorithm>
 
-
 #include <SFML/Graphics.hpp>
+
+#include <utils/../../beta/include/utils/containers/polymorphic_container.h>
+#include <utils/../../beta/include/utils/containers/enable_disable_vector.h>
+#include <utils/tracking.h>
 
 #include "graphics/Window.h"
 #include "Object.h"
+
+template<typename T>
+struct utils::container_emplace_helper<utils::enable_disable_vector, T>
+	{
+	template<typename... Args>
+	static T& emplace(utils::enable_disable_vector<T>& v, Args&&... args)
+		{
+		return v.emplace(std::forward<Args>(args)...);
+		}
+	};
 
 namespace engine
 	{
@@ -21,46 +34,28 @@ namespace engine
 		class Collide_discrete;
 		}
 
-	template <typename T>
-	class Action_list
-		{
-		private:
-			std::vector<size_t> to_disable;
-			std::vector<T*> to_enable;
-
-		public:
-			std::vector<T*> enabled;
-
-			void enable(T* element) { to_enable.push_back(element); }
-			void disable(size_t index) { to_disable.push_back(index); }
-
-			void disable_enable_pass()
-				{
-				//start removing from last
-				std::sort(to_disable.begin(), to_disable.end(), [](const auto& a, const auto& b) { return a > b; });
-
-				size_t size = enabled.size();
-				for (size_t index : to_disable) 
-					{
-					if constexpr (std::is_same<T, objects::Move>::value) { enabled[index]->finalize_disable(); }
-
-					if (index != (size - 1)) //if removing last there's nothing to swap
-						{
-						enabled[index] = enabled[size - 1];
-						enabled[index]->index = index;
-						}
-					size--;
-					}
-				enabled.resize(size);
-				to_disable.clear();
-
-				for (T* e : to_enable) { e->index = enabled.size(); enabled.push_back(e); }
-				to_enable.clear();
-				}
-		};
-
+	template <typename ...Types>
 	class Scene
 		{
+		//Genius sarah from #include discord channel:
+		template <typename T, typename U>
+		using ignore_first = U;
+		//it expands to
+		//	container{
+		//	(ignore_first<T0, void>(0), lambda),
+		//	(ignore_first<T1, void>(0), lambda),
+		//	(ignore_first<T2, void>(0), lambda),
+		//	}
+		//which is just
+		//	container{
+		//	(void(0), lambda),
+		//	(void(0), lambda),
+		//	(void(0), lambda),
+		//	}
+		//(void(0), lambda) is equivalent to lambda
+		//well, almost equivalent
+		//but in this case it should be equivalent
+
 		friend class objects::Object;
 		friend class objects::Step;
 		friend class objects::Draw;
@@ -68,49 +63,39 @@ namespace engine
 		friend class objects::Has_collision;
 		friend class objects::Collide_discrete;
 
-		private:
-			std::vector<std::unique_ptr<objects::Object>> objects;
-
-			Action_list<objects::Move>             moving_entities;
-			Action_list<objects::Draw>             draws;
-			Action_list<objects::Step>             steps;
-
-			Action_list<objects::Has_collision> have_collisions; //stores all objects with a collision, passive or active
-			Action_list<objects::Collide_discrete> collide_discretes;//stores all objects that actively look for collisions and run callbacks
-			std::vector<Action_list<objects::Has_collision::Coll_list_subscr>> collider_lists; //stores subscriptions of have_collision objects to various lists
-
 		public:
 			template <typename T, typename ...Args>
-			void create(Args... args)
+			utils::tracking_ptr<T> create(Args&&... args)
 				{
-				objects.emplace_back(std::make_unique<T>(*this, args...));
+				return {container.emplace<T>(std::forward<Args>(args)...)};
+				}
+
+			void update()
+				{
+				container.for_each_container([](auto& container) { container.update(); });
 				}
 
 			void movement_step()
 				{
-				moving_entities.disable_enable_pass();
-				for (objects::Move* move : moving_entities.enabled) { move->movement_step(); }
+				container.for_each_element_of_type<objects::Move>([](objects::Move& object) { object.movement_step(); });
 				}
 
 			void step()
 				{
-				steps.disable_enable_pass();
-				for (objects::Step* step : steps.enabled) { step->step(); }
+				container.for_each_element_of_type<objects::Step>([](objects::Step& object) { object.step(); });
 				}
 
 			void draw(graphics::Window& window, float interpolation)
 				{
-				draws.disable_enable_pass();
 				window.sf_window.clear();
-
-				for (objects::Draw* draw : draws.enabled) { draw->draw(window.sf_window, interpolation); }
-				for (objects::Has_collision* e : have_collisions.enabled) { e->collider_ptr->draw(window.sf_window); }
+				container.for_each_element_of_type<objects::Draw>([&](objects::Draw& object) { object.draw(window.sf_window, interpolation); });
+				//container.for_each_element_of_type<objects::Has_collision>([&](objects::Has_collision& object) { object.collider_ptr->draw(window.sf_window); });
 				window.sf_window.display();
 				}
 
 			void collisions()
 				{
-				have_collisions.disable_enable_pass();
+				/*have_collisions.disable_enable_pass();
 				for (objects::Has_collision* collide : have_collisions.enabled) { collide->collider_update(); }
 				for (Action_list<objects::Has_collision::Coll_list_subscr>& list : collider_lists) { list.disable_enable_pass(); }
 
@@ -127,10 +112,17 @@ namespace engine
 							if (result) { collision.callback({subscr->obj}); }
 							}
 						}
-					}
+					}*/
 				}
 
-			void set_collider_lists(size_t amount) { collider_lists.resize(amount); }
+			size_t active_objects_count() { return container.size(); }
+
+		private:
+			utils::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
+				{
+				[](utils::polymorphic_value<objects::Object>& polyobj) -> utils::enable_disable& { return polyobj->state; },
+				(ignore_first<Types, void>(0), [](auto& object) -> utils::enable_disable& { return object.state; })...
+				};
 		};
 
 	}

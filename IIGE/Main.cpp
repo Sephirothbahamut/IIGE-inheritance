@@ -4,8 +4,8 @@
 #include "utils/variadic.h"
 #include "utils/containers/Matrix.h"
 #include "utils/definitions.h"
+#include "utils/logger.h"
 
-#include "engine/logger.h"
 #include "engine/graphics/Window.h"
 #include "engine/Scene.h"
 #include "engine/Loop.h"
@@ -16,33 +16,30 @@ namespace iige { using namespace engine; using namespace engine::core; using nam
 
 const float steps_per_second = 5.f;
 
+// List the types that will exist in the scene
+namespace example { class Dummy; class Wall_circ; }
+
+// Prepare a scene type with all the object types it may contain during playtime
+using Scene_t = engine::Scene<example::Dummy, example::Wall_circ>;
+
+// Prepare some example classes
 namespace example
 	{
+	// Use a readable index name for collision layers
 	enum Collider_layer : size_t { Walls, SIZE };
 
-	class Dummy : public virtual iige::Object, public iige::Move, public iige::Step, public iige::Draw, iige::Collide_discrete
+	class Dummy : public iige::Object, public iige::Move, public iige::Step, public iige::Draw//, public iige::Collide_discrete
 		{
 		private:
-			size_t stop_moving;
-			size_t stop_drawing;
-			size_t stops_countdown = 6;
+			size_t step_count = 0;
+			size_t spawn_step;
+			size_t spawn_count;
 			sf::RectangleShape cs;
-
+			Scene_t* scene;
 		public:
-			Dummy(
-				/*Engine required argument*/
-				iige::Scene& scene, 
-				/*free user arguments*/
-				iige::Transform2 transform, sf::Color color, float z, size_t stops_countdown, size_t stop_moving, size_t stop_drawing
-			)
-				:
-				/*Engine required initializations*/
-				iige::Object(scene), iige::In_world(scene), iige::Move(scene), iige::Step(scene), iige::Draw(scene, z), 
-				iige::Has_collision(scene), iige::Collide_discrete(scene),
-				/*free user initializations*/ 
-				stops_countdown(stops_countdown), stop_moving(stop_moving), stop_drawing(stop_drawing)
+			Dummy(Scene_t& scene, iige::Transform2 transform, sf::Color color, size_t spawn_step, size_t spawn_count)
+				: scene(&scene), spawn_step(spawn_step), spawn_count(spawn_count)
 				{
-
 				//Movement
 				this->transform = transform; //assign starting position
 				movement.position = iige::Vec2f{10.f, 0.f} / steps_per_second; //assign some speed
@@ -51,18 +48,8 @@ namespace example
 				movement.orientation = 40_deg / steps_per_second;
 
 				//Collisions
-				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, 3.f);
-				collider_ptr->origin = {10.f, 0.f};
-
-				iige::Collide_discrete::collisions.push_back
-					(
-					iige::collisions::Collision_discrete
-						{
-						Collider_layer::Walls, 
-						[](iige::collisions::Other other) { iige::logger << utils::message("FIRST COLLISION OF IIGEv2 DETECTED"); return false; }
-						}
-					);
-
+				//collider_ptr = utils::make_polymorphic_value<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, 3.f);
+				//collider_ptr->origin = {10.f, 0.f};
 
 				//Draw
 				cs.setSize({15.f, 8.f});
@@ -70,28 +57,25 @@ namespace example
 				cs.setFillColor(color);
 				}
 
+			Dummy(const Dummy& copy) = default;
+			Dummy& operator=(const Dummy&) = default;
+
+			Dummy(Dummy&& move) noexcept = default;
+			Dummy& operator=(Dummy&& move) noexcept = default;
 
 			virtual void step() override
 				{
-				movement.position += (iige::Vec2f{0.f, 1.f} / (steps_per_second * steps_per_second));
+				using namespace utils::angle::literals;
 
-				//iige::logger << iige::utils::message::wrn("Object stepping");
-				if (stops_countdown == stop_moving)
+				movement.position += (iige::Vec2f{0.f, 1.f} / (steps_per_second * steps_per_second)); //acceleration per step
+				if (step_count < spawn_step * 2) { step_count++; }
+				
+				if(step_count == spawn_step)
 					{
-					//iige::logger << iige::utils::message::wrn("Stop moving!!!");
-					//Move::disable();
+					utils::tracking_ptr<Dummy> new_dummy = scene->create<Dummy>(std::ref(*scene), transform, cs.getFillColor(), spawn_step, spawn_count - 1);
+					new_dummy->movement = movement.composite(engine::core::Transform2{{}, 30_deg, {}});
 					}
-				if (stops_countdown == stop_drawing)
-					{
-					//iige::logger << iige::utils::message::wrn("Stop drawing!!!");
-					//Draw::disable();
-					}
-				if (stops_countdown == 0)
-					{
-					//iige::logger << iige::utils::message::wrn("Stop stepping!!!");
-					//Step::disable();
-					}
-				stops_countdown--;
+				if (step_count == spawn_step * 2) { movement = engine::core::Transform2::zero(); }
 				}
 
 			virtual void draw(sf::RenderTarget& rt, float interpolation) override
@@ -104,21 +88,20 @@ namespace example
 				}
 		};
 
-	class Wall_circ : public iige::Has_collision, public iige::Draw
+	class Wall_circ : public iige::Object, public iige::In_world/*, public iige::Has_collision*/, public iige::Draw
 		{
 		private:
 			sf::CircleShape circ;
 
 		public:
-			Wall_circ(iige::Scene& scene, iige::Vec2f pos, float radius) : iige::Object(scene), iige::In_world(scene), iige::Has_collision(scene), iige::Draw(scene), circ(radius)
+			Wall_circ(iige::Vec2f pos, float radius) : circ(radius)
 				{
 				transform.position = pos;
 				circ.setPosition(pos.x, pos.y);
 
-				collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, radius);
-				Has_collision::add_to_list(Collider_layer::Walls);
+				//collider_ptr = std::make_unique<iige::collisions::shapes::Circle>(iige::core::Vec2f{}, radius);
 				}
-			
+
 			virtual void draw(sf::RenderTarget& rt, float interpolation) override
 				{
 				rt.draw(circ);
@@ -126,35 +109,34 @@ namespace example
 		};
 	}
 
+
 int main()
 	{
 	try
 		{
-
 		engine::graphics::Window window(1024, 768, "Hello World");
-		engine::Scene scene;
 		engine::Resources_manager resman;
+		Scene_t scene;
 
 		//Loading resources returns an uncopyable but moveable RAII container.
-		auto fireball_text = resman.add_texture("data/textures/fireball_0.png"); //Compile time error if the return value is not used
-
-
-		scene.set_collider_lists(example::Collider_layer::SIZE);
+		auto fireball_text = resman.add_texture("data/textures/fireball_0.png");
 
 		scene.create<example::Wall_circ>(iige::Vec2f{580, 380}, 10.f);
 
-		scene.create<example::Dummy>(iige::Transform2{{500.f, 350.f}}, sf::Color::Green, 1.f, 10, 6, 3);
-		//scene.create<example::Dummy>(iige::Transform2{{10.f, 20.f}}, sf::Color::Yellow, 0.f, 10, 3, 2);
-		//scene.create<example::Dummy>(iige::Transform2{{ 0.f, 20.f}}, sf::Color::Cyan,   2.f, 10, 5, 1);
-		for (size_t i = 0; i < 5800; i++)
+		using namespace utils::literals;
+
+		for (size_t i = 0; i < 100; i++)
 			{
-			//scene.create<example::Dummy>(iige::Transform2{{ 0.f, 20.f}}, sf::Color::Cyan, 2.f, 10, 5, 1);
+			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{500.f, 350.f}}, sf::Color::Green, 10_size, 3_size);
+			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{ 10.f,  20.f}}, sf::Color::Yellow, 10_size, 3_size);
+			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{  0.f,  20.f}}, sf::Color::Cyan, 10_size, 3_size);
 			}
+		scene.update();
 
 		engine::Loop loop(scene, window, steps_per_second);
 		loop.run();
 		}
-	catch (const std::exception& e) { engine::logger.emplace(utils::message::Type::err, e.what()); }
+	catch (const std::exception& e) { utils::globals::logger.err(e.what()); }
 
 	return 0;
 	}

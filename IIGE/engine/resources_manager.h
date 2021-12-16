@@ -4,9 +4,9 @@
 #include <string>
 #include <initializer_list>
 
-#include <SFML/Graphics.hpp>
+#include <utils/logger.h>
 
-#include "Logger.h"
+#include <SFML/Graphics.hpp>
 
 namespace engine
 	{
@@ -78,10 +78,10 @@ namespace engine
 			std::vector<typename _inner_resman::Resources_container<T>::iterator> iterators;
 
 			Resources_referencer(_inner_resman::Resources_container<T>* container) : container(container) {}//Only use for default resource
-			Resources_referencer(_inner_resman::Resources_container<T>* container, std::vector<typename _inner_resman::Resources_container<T>::iterator>& iterators)
-				: container(container), iterators(std::move(iterators))
+			Resources_referencer(_inner_resman::Resources_container<T>* container, std::vector<typename _inner_resman::Resources_container<T>::iterator>& in_iterators)
+				: container(container), iterators(std::move(in_iterators))
 				{
-				for (auto& iterator : iterators) { iterator->second.count++; }
+				for (auto& iterator : this->iterators) { iterator->second.count++; }
 				}
 		public:
 			Resources_referencer() = delete;

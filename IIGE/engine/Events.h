@@ -13,63 +13,95 @@
 
 namespace engine
 	{
-	class Key
-		{
-		public:
-			using Code = sf::Keyboard::Key;
-			enum class State { up, pressed, down, released };
-
-			Key& operator=(State state) { this->state = state; }
-			State state;
-			operator bool() const { return state == State::pressed || state == State::down; }
-			float operator-(const Key& other) const { return ((*this) ? 1.f : 0.f) - (other ? 1.f : 0.f); }
-		};
+	class Input_state;
 
 	class Keyboard
 		{
+		friend class Input_state;
 		public:
+			class Key
+				{
+				public:
+					using Code = sf::Keyboard::Key;
+
+					Key& operator=(bool pressed) { this->pressed = pressed; }
+					bool pressed = false;
+					operator bool() const { return pressed; }
+					float operator-(const Key& other) const { return ((*this) ? 1.f : 0.f) - (other ? 1.f : 0.f); }
+				};
+
 			std::array<Key, Key::Code::KeyCount> keys;
-			std::vector<Key::Code> pressed, released;
 
 			const Key& operator[](Key::Code keycode) const { return keys[keycode]; }
 
-			void pre_update()
-				{
-				for (const auto& keycode : pressed) { keys[keycode] = Key::State::down; }
-				for (const auto& keycode : released) { keys[keycode] = Key::State::up; }
-				}
-
-			void register_event(const sf::Event& event)
+		private:
+			bool register_event(const sf::Event& event)
 				{
 				switch (event.type)
 					{
-					case sf::Event::KeyPressed:
-						keys[event.key.code] = Key::State::pressed; pressed.push_back(event.key.code);
-						break;
-					case sf::Event::KeyReleased:
-						keys[event.key.code] = Key::State::released; released.push_back(event.key.code);
-						break;
+					case sf::Event::KeyPressed:  keys[event.key.code] = true; break;
+					case sf::Event::KeyReleased: keys[event.key.code] = false; break;
+					default: return false;
 					}
+				return true;
 				}
-
 		};
 
+	class Mouse
+		{
+		friend class Input_state;
+		public:
+			class Button
+				{
+				public:
+					using Code = sf::Mouse::Button;
+
+					Button& operator=(bool pressed) { this->pressed = pressed; }
+					bool pressed = false;
+					operator bool() const { return pressed; }
+					float operator-(const Button& other) const { return ((*this) ? 1.f : 0.f) - (other ? 1.f : 0.f); }
+				};
+
+			core::Vec2f position;
+
+			std::array<Button, Button::Code::ButtonCount> buttons;
+
+			const Button& operator[](Button::Code button_code) const { return buttons[button_code]; }
+
+		private:
+			bool register_event(const sf::Event& event)
+				{
+				switch (event.type)
+					{
+					case sf::Event::MouseButtonPressed:  buttons[event.mouseButton.button] = true;  break;
+					case sf::Event::MouseButtonReleased: buttons[event.mouseButton.button] = false; break;
+					case sf::Event::MouseMoved:          position = {event.mouseMove.x, event.mouseMove.y}; break;
+					default: return false;
+					}
+				return true;
+				}
+		};
+
+	template <typename Scene_t, typename ...Input_types>
+	class Input_manager;
 
 	class Input_state
 		{
+		template<typename, typename ...>
+		friend class Input_manager;
+
 		public:
 			Keyboard keyboard;
+			Mouse    mouse;
 
-			void pre_update() { keyboard.pre_update(); }
+		private:
 			void register_event(const sf::Event event)
 				{				
-				switch (event.type)
+				if (!keyboard.register_event(event))
 					{
-					case sf::Event::KeyPressed: case sf::Event::KeyReleased: keyboard.register_event(event);
+					mouse.register_event(event);
 					}
 				}
-			
-
 		};
 
 	class Input_group
@@ -86,28 +118,27 @@ namespace engine
 
 			virtual bool update(const Input_state& input_state) override
 				{
-				float new_x = input_state.keyboard[Key::Code::D] - input_state.keyboard[Key::Code::A];
-				float new_y = input_state.keyboard[Key::Code::S] - input_state.keyboard[Key::Code::W];
+				float new_x = input_state.keyboard[Keyboard::Key::Code::D] - input_state.keyboard[Keyboard::Key::Code::A];
+				float new_y = input_state.keyboard[Keyboard::Key::Code::S] - input_state.keyboard[Keyboard::Key::Code::W];
 				if (new_x == x && new_y == y) { return false; } //Event callback won't be called this step
 				else { x = new_x; y = new_y; return true; }
 				}
 		};
 
-	template <typename ...Input_types>
+	template <typename Scene_t, typename ...Input_types>
 	class Input_manager
 		{
-
 		public:
-			void update(const graphics::Window& window, Scene& scene)
+			void update(const graphics::Window& window, Scene_t& scene)
 				{
 				poll_events(window);
 
-				utils::tuple::for_each_in_tuple(input_groups, [&](Input_group& input_group)
+				utils::tuple::for_each_in_tuple(input_groups, [&](auto& input_group)
 					{
-					input_group.update(state);
-
-					//TODO
-					scene.for_each_of_type<Input<type_of_current_tuple_element>>(&Input<type_of_current_tuple_element>::input);
+					if (input_group.update(state))
+						{
+						//for_each_with_input(scene, input_group);
+						}
 					});
 				}
 
@@ -119,6 +150,13 @@ namespace engine
 				{
 				sf::Event event;
 				while (window.poll_event(event)) { state.register_event(event); }
+				}
+
+			template <typename T>
+			void for_each_with_input(Scene_t& scene, T input_group)
+				{
+				//scene.for_
+				
 				}
 		};
 
