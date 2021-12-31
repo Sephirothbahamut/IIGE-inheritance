@@ -16,15 +16,15 @@ namespace engine::collisions::shapes
 			}
 		}
 
-	bool   Poin::_collide_discrete  (const shapes::Poin& other) const { return core::Vec2f::distance(global_position, other.global_position) == 0; }
-	bool   Poin::_collide_discrete  (const shapes::Circ& other) const { return core::Vec2f::distance(global_position, other.global_position) <= other.radius; }
+	bool   Poin::_collide_discrete  (const shapes::Poin& other) const { return utils::math::vec2f::distance(global_position, other.global_position) == 0; }
+	bool   Poin::_collide_discrete  (const shapes::Circ& other) const { return utils::math::vec2f::distance(global_position, other.global_position) <= other.radius; }
 	bool   Poin::_collide_discrete  (const shapes::Line& other) const { return false; }
 	bool   Poin::_collide_discrete  (const shapes::Poly& other) const { return false; }
 	bool   Poin::_collide_discrete  (const shapes::AABB& other) const { return false; }
 	bool   Poin::_collide_discrete  (const shapes::Rect& other) const { return false; }
 	
 	bool   Circ::_collide_discrete  (const shapes::Poin& other) const { return other.collide(*this); }
-	bool   Circ::_collide_discrete  (const shapes::Circ& other) const { return core::Vec2f::distance(global_position, other.global_position) <= radius + other.radius; }
+	bool   Circ::_collide_discrete  (const shapes::Circ& other) const { return utils::math::vec2f::distance(global_position, other.global_position) <= radius + other.radius; }
 	bool   Circ::_collide_discrete  (const shapes::Line& other) const { return false; }
 	bool   Circ::_collide_discrete  (const shapes::Poly& other) const { return false; }
 	bool   Circ::_collide_discrete  (const shapes::AABB& other) const { return false; }

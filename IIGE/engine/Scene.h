@@ -118,6 +118,8 @@ namespace engine
 			size_t active_objects_count() { return container.size(); }
 
 		private:
+			// enable_disable vector takes a lambda to access the enable_disable state of its contained type
+			// polymorphic_container takes the parameters to pass to the container type it's using inside
 			utils::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
 				{
 				[](utils::polymorphic_value<objects::Object>& polyobj) -> utils::enable_disable& { return polyobj->state; },

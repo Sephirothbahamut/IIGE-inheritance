@@ -5,8 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "core/Transform2.h"
-#include "core/Vec2.h"
+#include <utils/math/Transform2.h>
+#include <utils/math/Vec2.h>
 
 
 namespace engine
@@ -18,8 +18,8 @@ namespace engine
 		struct Data
 			{
 			objects::Has_collision* other;
-			core::Vec2f normal;
-			core::Transform2 trnition;
+			utils::math::vec2f normal;
+			utils::math::Transform2 trnition;
 			float dist_from_start;
 			};
 
@@ -41,7 +41,7 @@ namespace engine
 				{
 				friend class Poin; friend class Circ; friend class Line; friend class AABB; friend class Rect;
 				private:
-					Shape(Type type, const core::Vec2f& origin) : type{type}, origin{origin} {}
+					Shape(Type type, const utils::math::vec2f& origin) : type{type}, origin{origin} {}
 					Type type;
 					
 					virtual bool   _collide_discrete  (const shapes::Poin& other) const = 0;
@@ -52,11 +52,11 @@ namespace engine
 					virtual bool   _collide_discrete  (const shapes::Rect& other) const = 0;
 
 				public:
-					core::Vec2f origin;
+					utils::math::vec2f origin;
 
 					bool collide(const Shape& other) const;
 
-					virtual void update(const core::Transform2& transform) = 0;
+					virtual void update(const utils::math::Transform2& transform) = 0;
 					virtual void draw(sf::RenderTarget& rt) const = 0;
 				};
 
@@ -64,7 +64,7 @@ namespace engine
 				{
 				friend class Poin; friend class Circ; friend class Line; friend class AABB; friend class Rect;
 				private:
-					core::Vec2f global_position{};
+					utils::math::vec2f global_position{};
 
 					virtual bool   _collide_discrete  (const shapes::Poin& other) const override;
 					virtual bool   _collide_discrete  (const shapes::Circ& other) const override;
@@ -74,9 +74,9 @@ namespace engine
 					virtual bool   _collide_discrete  (const shapes::Rect& other) const override;
 
 				public:
-					Poin(const core::Vec2f& origin) : Shape{Type::Poin, origin} {}
+					Poin(const utils::math::vec2f& origin) : Shape{Type::Poin, origin} {}
 
-					virtual void update(const core::Transform2& transform) override { global_position = transform.transformed(origin); }
+					virtual void update(const utils::math::Transform2& transform) override { global_position = origin * transform; }
 					virtual void draw(sf::RenderTarget& rt) const override
 						{
 						sf::CircleShape cs(2);
@@ -90,7 +90,7 @@ namespace engine
 				{
 				friend class Poin; friend class Circ; friend class Line; friend class AABB; friend class Rect;
 				private:
-					core::Vec2f global_position{};
+					utils::math::vec2f global_position{};
 
 					virtual bool   _collide_discrete  (const shapes::Poin& other) const override;
 					virtual bool   _collide_discrete  (const shapes::Circ& other) const override;
@@ -100,10 +100,10 @@ namespace engine
 					virtual bool   _collide_discrete  (const shapes::Rect& other) const override;
 					
 				public:
-					Circ(const core::Vec2f& origin, float radius) : Shape{Type::Circ, origin}, radius{radius} {}
+					Circ(const utils::math::vec2f& origin, float radius) : Shape{Type::Circ, origin}, radius{radius} {}
 					float radius;
 
-					virtual void update(const core::Transform2& transform) override { global_position = transform.transformed(origin); }
+					virtual void update(const utils::math::Transform2& transform) override { global_position = origin * transform; }
 					virtual void draw(sf::RenderTarget& rt) const override
 						{
 						sf::CircleShape cs(radius);
@@ -124,7 +124,7 @@ namespace engine
 				private:
 
 				public:
-					core::Vec2f size;
+					utils::math::vec2f size;
 				};
 
 			class Rect : public Shape
@@ -132,7 +132,7 @@ namespace engine
 				private:
 
 				public:
-					core::Vec2f size;
+					utils::math::vec2f size;
 				};
 
 			using Point                     = Poin;

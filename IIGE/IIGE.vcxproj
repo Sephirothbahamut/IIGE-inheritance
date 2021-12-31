@@ -12,8 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine\Collider.cpp" />
-    <ClCompile Include="engine\core\Euler.cpp" />
-    <ClCompile Include="engine\core\Quaternion.cpp" />
     <ClCompile Include="engine\Object.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

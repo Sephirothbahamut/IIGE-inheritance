@@ -21,12 +21,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\Euler.cpp">
-      <Filter>Modules\engine\core</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\Quaternion.cpp">
-      <Filter>Modules\engine\core</Filter>
-    </ClCompile>
     <ClCompile Include="engine\Object.cpp">
       <Filter>Modules\engine</Filter>
     </ClCompile>

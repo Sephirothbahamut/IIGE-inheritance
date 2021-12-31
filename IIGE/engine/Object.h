@@ -13,7 +13,7 @@
 #include <utils/../../beta/include/utils/containers/enable_disable_vector.h>
 #include <utils/logger.h>
 
-#include "core/Transform2.h"
+#include <utils/math/Transform2.h>
 #include "Collider.h"
 
 namespace engine { template <typename ...Types> class Scene; }
@@ -39,14 +39,14 @@ namespace engine::objects
 	class In_world
 		{
 		public:
-			core::Transform2 transform{};
+			utils::math::Transform2 transform{};
 		};
 
 	class Move : public virtual In_world
 		{
 		public:
-			core::Transform2 transform_previous;
-			core::Transform2 movement;
+			utils::math::Transform2 transform_previous;
+			utils::math::Transform2 movement;
 
 			void movement_step() { transform_previous = transform; transform += movement; }
 
