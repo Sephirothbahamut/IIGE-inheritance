@@ -126,7 +126,8 @@ namespace example
 namespace utmg = utils::math::geometry;
 namespace utm = utils::math;
 
-sf::VertexArray to_sf(const utmg::polygon& polygon, const sf::Color& color) noexcept
+template <utmg::polygon_type_t polygon_type>
+sf::VertexArray to_sf(const utmg::polygon<polygon_type>& polygon, const sf::Color& color) noexcept
 	{
 	sf::VertexArray ret{sf::LineStrip, polygon.get_vertices().size() + 1};
 	for (size_t i = 0; i < polygon.get_vertices().size(); i++)
@@ -175,24 +176,28 @@ int main()
 	{
 	using namespace utils::angle::literals;
 	using namespace utils::math::geometry::transformations;
-	using utmg__polygon = utmg::convex_polygon;
+	using poly_convex = utmg::polygon<utmg::polygon_type_t::convex>;
+	using poly_gon    = utmg::polygon<utmg::polygon_type_t::concave>;
 
 	sf::RenderWindow rw{{800, 600}, "pippo"};
 	rw.setFramerateLimit(60);
 
 	utmg::segment src_segment{{-10, 0}, {10, 0}};
 	utm ::vec2f   src_point  {0, 0};
-	utmg__polygon src_poly   {{{-10, -10}, {10, -10}, {10, 10},{-10, 10}}};
-	utmg::circle  src_circle {{0, 0}, 12};
+	poly_convex   src_poly   {{{-10, -10}, {10, -10}, {10, 10},         {-10, 10}}};
+	poly_gon      src_cttv   {{{-10, -10}, {10, -10}, {10, 10}, {0, 0}, {-10, 10}}};
+	utmg::circle  src_circle {{0, 0}, 10};
 
 	utm::Transform2	tr_segment{{200, 300},  58_deg, 1.f};
 	utm::Transform2	tr_point  {{100, 400},  24_deg, 1.f};
 	utm::Transform2	tr_poly   {{250, 300}, 105_deg, 1.f};
+	utm::Transform2	tr_cttv   {{250, 300}, 105_deg, 1.f};
 	utm::Transform2	tr_circle {{350, 400},  75_deg, 1.f};
 
 	utmg::segment segment{src_segment * tr_segment};
 	utm ::vec2f   point  {src_point   * tr_point  };
-	utmg__polygon poly   {src_poly    * tr_poly   };
+	poly_convex   poly   {src_poly    * tr_poly   };
+	poly_gon      cttv   {src_cttv    * tr_cttv   };
 	utmg::circle  circle {src_circle  * tr_circle };
 
 	utils::observer_ptr<utm::Transform2> selected_transform{nullptr};
@@ -216,10 +221,11 @@ int main()
 						{
 						switch (event.key.code)
 							{
-							case sf::Keyboard::Num0: selected_transform = &tr_segment; break;
-							case sf::Keyboard::Num1: selected_transform = &tr_point;   break;
-							case sf::Keyboard::Num2: selected_transform = &tr_poly;    break;
-							case sf::Keyboard::Num3: selected_transform = &tr_circle;  break;
+							case sf::Keyboard::Num1: selected_transform = &tr_segment; break;
+							case sf::Keyboard::Num2: selected_transform = &tr_point;   break;
+							case sf::Keyboard::Num3: selected_transform = &tr_poly;    break;
+							case sf::Keyboard::Num4: selected_transform = &tr_cttv;  break;
+							case sf::Keyboard::Num5: selected_transform = &tr_circle;  break;
 							}
 
 						if (selected_transform != nullptr)
@@ -233,32 +239,41 @@ int main()
 
 								case sf::Keyboard::PageUp:   selected_transform->orientation -= 1_deg; break;
 								case sf::Keyboard::PageDown: selected_transform->orientation += 1_deg; break;
+
+								case sf::Keyboard::Add:      selected_transform->size *= 2; break;
+								case sf::Keyboard::Subtract: selected_transform->size /= 2; break;
 								}
 							}
 						segment = {src_segment * tr_segment};
 						point   = {src_point   * tr_point  };
 						poly    = {src_poly    * tr_poly   };
+						cttv    = {src_cttv    * tr_cttv   };
 						circle  = {src_circle  * tr_circle };
 						}
 				}
 			}
 		//step
-		//bool st{utmg::collides(segment, point)};
-		//bool sp{utmg::collides(segment, poly)};
+		bool st{utmg::collides(segment, point)};
+		bool sp{utmg::collides(segment, poly)};
+		bool sv{utmg::collides(segment, cttv)};
 		bool tp{utmg::collides(point, poly)};
-		//bool pc{utmg::collides(poly, circle)};
-		//bool tc{utmg::collides(point, circle)};
-		//bool cs{utmg::collides(circle, segment)};
+		bool tv{utmg::collides(point, cttv)};
+		bool pc{utmg::collides(poly, circle)};
+		bool vc{utmg::collides(cttv, circle)};
+		bool tc{utmg::collides(point, circle)};
+		bool cs{utmg::collides(circle, segment)};
+		bool pv{utmg::collides(poly, cttv)};
 
 
 
 		//draw
 		rw.clear();
 
-		//rw.draw(to_sf(segment, (st || sp || cs) ? sf::Color::Red : sf::Color::White));
-		rw.draw(to_sf(point,   (tp /*|| tc || st*/) ? sf::Color::Red : sf::Color::White));
-		rw.draw(to_sf(poly,    (tp /*|| sp || pc*/) ? sf::Color::Red : sf::Color::White));
-		//rw.draw(to_sf(circle,  (pc || tc || cs) ? sf::Color::Red : sf::Color::White));
+		rw.draw(to_sf(segment, (st || sp || cs || sv) ? sf::Color::Red : sf::Color::White));
+		rw.draw(to_sf(point,   (tp || tc || st || tv) ? sf::Color::Red : sf::Color::White));
+		rw.draw(to_sf(poly,    (tp || sp || pc || pv) ? sf::Color::Red : sf::Color::White));
+		rw.draw(to_sf(circle,  (pc || tc || cs || vc) ? sf::Color::Red : sf::Color::White));
+		rw.draw(to_sf(cttv,    (pv || vc || tv || sv) ? sf::Color::Red : sf::Color::White));
 
 		rw.display();
 		}
