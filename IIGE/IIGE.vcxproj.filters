@@ -24,9 +24,6 @@
     <ClCompile Include="engine\Object.cpp">
       <Filter>Modules\engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Collider.cpp">
-      <Filter>Modules\engine</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\Euler.h">
@@ -68,13 +65,13 @@
     <ClInclude Include="engine\Loop.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Collider.h">
-      <Filter>Modules\engine</Filter>
-    </ClInclude>
     <ClInclude Include="engine\resources_manager.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\Events.h">
+      <Filter>Modules\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Collisions.h">
       <Filter>Modules\engine</Filter>
     </ClInclude>
   </ItemGroup>

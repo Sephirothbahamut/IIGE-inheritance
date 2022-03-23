@@ -1,5 +1,6 @@
 
 #include <vector>
+#include <array>
 
 #include "utils/variadic.h"
 #include "utils/containers/Matrix.h"
@@ -40,6 +41,7 @@ namespace example
 			size_t spawn_count;
 			sf::RectangleShape cs;
 
+			std::array<uint8_t, 2048> arr;
 
 			Scene_t* scene;
 		public:
@@ -126,8 +128,7 @@ namespace example
 namespace utmg = utils::math::geometry;
 namespace utm = utils::math;
 
-template <utmg::polygon_type_t polygon_type>
-sf::VertexArray to_sf(const utmg::polygon<polygon_type>& polygon, const sf::Color& color) noexcept
+sf::VertexArray to_sf(const utmg::polygon& polygon, const sf::Color& color) noexcept
 	{
 	sf::VertexArray ret{sf::LineStrip, polygon.get_vertices().size() + 1};
 	for (size_t i = 0; i < polygon.get_vertices().size(); i++)
@@ -172,12 +173,12 @@ sf::VertexArray to_sf(const utm::vec2f& point, const sf::Color& color) noexcept
 	return ret;
 	}
 
-int main()
+int mainz()
 	{
 	using namespace utils::angle::literals;
 	using namespace utils::math::geometry::transformations;
-	using poly_convex = utmg::polygon<utmg::polygon_type_t::convex>;
-	using poly_gon    = utmg::polygon<utmg::polygon_type_t::concave>;
+	using poly_convex = utmg::convex_polygon;
+	using poly_gon    = utmg::polygon;
 
 	sf::RenderWindow rw{{800, 600}, "pippo"};
 	rw.setFramerateLimit(60);
@@ -185,7 +186,7 @@ int main()
 	utmg::segment src_segment{{-10, 0}, {10, 0}};
 	utm ::vec2f   src_point  {0, 0};
 	poly_convex   src_poly   {{{-10, -10}, {10, -10}, {10, 10},         {-10, 10}}};
-	poly_gon      src_cttv   {{{-10, -10}, {10, -10}, {10, 10}, {0, 0}, {-10, 10}}};
+	poly_gon      src_cttv{{{-10, -10}, {-5, 0}, { 10, -10 }, {10, 10}, {0, 0}, {-10, 10}}};
 	utmg::circle  src_circle {{0, 0}, 10};
 
 	utm::Transform2	tr_segment{{200, 300},  58_deg, 1.f};
@@ -277,9 +278,10 @@ int main()
 
 		rw.display();
 		}
+	return 0;
 	}
 
-int mainz()
+int main()
 	{
 	try
 		{

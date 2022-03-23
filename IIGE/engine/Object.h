@@ -14,7 +14,7 @@
 #include <utils/logger.h>
 
 #include <utils/math/Transform2.h>
-#include "Collider.h"
+//#include "Collider.h"
 
 namespace engine { template <typename ...Types> class Scene; }
 

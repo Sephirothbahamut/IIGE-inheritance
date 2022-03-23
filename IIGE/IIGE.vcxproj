@@ -11,12 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine\Collider.cpp" />
     <ClCompile Include="engine\Object.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\Collider.h" />
+    <ClInclude Include="engine\Collisions.h" />
     <ClInclude Include="engine\compile_settings.h" />
     <ClInclude Include="engine\core\Euler.h" />
     <ClInclude Include="engine\core\Quaternion.h" />
