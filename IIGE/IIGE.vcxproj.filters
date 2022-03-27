@@ -7,14 +7,23 @@
     <Filter Include="Modules\engine">
       <UniqueIdentifier>{ba4aa644-a096-4420-9f93-ce59d2198553}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Modules\engine\core">
-      <UniqueIdentifier>{c3829053-1054-4405-96ea-d8a1c0300bda}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Modules\engine\graphics">
       <UniqueIdentifier>{d792d142-89af-436e-9c3a-2ff6298db453}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources">
       <UniqueIdentifier>{bb7c5834-403e-47f5-bf0c-77ce26e31d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\engine\ECS">
+      <UniqueIdentifier>{e3466566-c01a-42f6-8dc5-72293685e42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\engine\ECS\components">
+      <UniqueIdentifier>{32ee081e-db0a-4dc9-9c87-a327d0dae98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\engine\ECS\systems">
+      <UniqueIdentifier>{b1cf17df-dc17-40f9-8595-29a1c2767e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\engine\sfml_interfacing">
+      <UniqueIdentifier>{bdc19c2c-cb48-4e5a-ac14-3b6c97c1537c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -26,29 +35,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\core\Euler.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Quaternion.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Transform2.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Transform3.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Vec2.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Vec3.h">
-      <Filter>Modules\engine\core</Filter>
-    </ClInclude>
     <ClInclude Include="engine\graphics\Window.h">
       <Filter>Modules\engine\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Vec.h">
-      <Filter>Modules\engine\core</Filter>
     </ClInclude>
     <ClInclude Include="engine\Sceneold.h">
       <Filter>Modules\engine</Filter>
@@ -73,6 +61,24 @@
     </ClInclude>
     <ClInclude Include="engine\Collisions.h">
       <Filter>Modules\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\components\bad_draw.h">
+      <Filter>Modules\engine\ECS\components</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\components\speed.h">
+      <Filter>Modules\engine\ECS\components</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\components\transform.h">
+      <Filter>Modules\engine\ECS\components</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\systems\draw.h">
+      <Filter>Modules\engine\ECS\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\systems\move.h">
+      <Filter>Modules\engine\ECS\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\sfml_interfacing\vec.h">
+      <Filter>Modules\engine\sfml_interfacing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

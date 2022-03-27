@@ -12,12 +12,13 @@
 #include "engine/Loop.h"
 #include "engine/resources_manager.h"
 
-
-
+#include "engine/ecs/components/bad_draw.h"
+#include "engine/ecs/components/speed.h"
+#include "engine/ecs/components/transform.h"
 
 namespace iige { using namespace engine; /*using namespace engine::core;*/ using namespace engine::objects; using namespace utils::math; }
 
-constexpr float steps_per_second = 5.f;
+constexpr float steps_per_second = 1.f;
 constexpr float seconds_per_step = 1 / steps_per_second;
 
 // List the types that will exist in the scene
@@ -40,6 +41,7 @@ namespace example
 			size_t spawn_step;
 			size_t spawn_count;
 			sf::RectangleShape cs;
+			iige::Transform2 interpolated;
 
 			std::array<uint8_t, 2048> arr;
 
@@ -88,15 +90,18 @@ namespace example
 
 			virtual void draw(sf::RenderTarget& rt, float interpolation) override
 				{
-				iige::Transform2 interpolated = iige::Transform2::lerp(transform_previous, transform, interpolation);
+				interpolated = iige::Transform2::lerp(transform_previous, transform, interpolation);
 
-				cs.setPosition(interpolated.position.x, interpolated.position.y);
-				cs.setRotation(interpolated.orientation.value);
+				//cs.setPosition(interpolated.position.x, interpolated.position.y);
+				//cs.setRotation(interpolated.orientation.value);
 
 
-				rt.draw(cs);
+				//rt.draw(cs);
 				}
 		};
+
+
+
 
 	class Wall_circ : public iige::Object, public iige::In_world/*, public iige::Has_collision*/, public iige::Draw
 		{
@@ -172,8 +177,8 @@ sf::VertexArray to_sf(const utm::vec2f& point, const sf::Color& color) noexcept
 
 	return ret;
 	}
-
-int mainz()
+/*
+int mainzx()
 	{
 	using namespace utils::angle::literals;
 	using namespace utils::math::geometry::transformations;
@@ -280,28 +285,60 @@ int mainz()
 		}
 	return 0;
 	}
+*/
+
+
+class A {};
 
 int main()
 	{
+	entt::registry registry;
+	auto entity{registry.create()};
+	registry.emplace<A>(entity);
+
+	auto view{registry.view<A>()};
+
+	view.each([&](const auto& a)
+		{
+		auto entits{registry.create()};
+		registry.emplace<A>(entits);
+
+		auto view{registry.view<A>()};
+		});
+
+	return 0;
+
 	try
 		{
-		engine::graphics::Window window(1024, 768, "Hello World");
+		engine::graphics::Window window(1024, 768, "Hello World"); 
 		engine::Resources_manager resman;
 		Scene_t scene;
 
 		//Loading resources returns an uncopyable but moveable RAII container.
 		auto fireball_text = resman.add_texture("data/textures/fireball_0.png");
 
-		scene.create<example::Wall_circ>(iige::vec2f{580, 380}, 10.f);
+		//scene.create<example::Wall_circ>(iige::vec2f{580, 380}, 10.f);
 
 		using namespace utils::literals;
+		using namespace utils::angle::literals;
 
-		for (size_t i = 0; i < 1000; i++)
+		for (size_t i = 0; i < 100000; i++)
 			{
 			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{500.f, 350.f}}, sf::Color::Green,  2.f, 3_size);
-			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{ 10.f,  20.f}}, sf::Color::Yellow, 2.f, 3_size);
-			scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{  0.f,  20.f}}, sf::Color::Cyan,   2.f, 3_size);
+			//scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{ 10.f,  20.f}}, sf::Color::Yellow, 2.f, 3_size);
+			//scene.create<example::Dummy>(std::ref(scene), iige::Transform2{{  0.f,  20.f}}, sf::Color::Cyan,   2.f, 3_size);
 			}
+
+		utils::math::Transform2 t{.position{0.f, 0.f}, .orientation{}};
+		for (size_t i = 0; i < 100000; i++)
+			{
+			auto entity{scene.ecs_registry.create()};
+			scene.ecs_registry.emplace<iige::ecs::components::transform>(entity, t);
+			scene.ecs_registry.emplace<iige::ecs::components::speed>(entity, utils::math::Transform2{.position{10.f, 0.f}});
+			scene.ecs_registry.emplace<iige::ecs::components::bad_draw>(entity, 32.f);
+			scene.ecs_registry.emplace<iige::ecs::components::interpolated>(entity);
+			scene.ecs_registry.emplace<iige::ecs::components::transform_next>(entity, t);
+			}/**/
 		scene.update();
 
 		engine::Loop loop{scene, window, steps_per_second};

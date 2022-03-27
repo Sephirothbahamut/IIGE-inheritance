@@ -3,14 +3,19 @@
 #include <vector>
 #include <algorithm>
 
-#include <SFML/Graphics.hpp>
-
 #include <utils/containers/polymorphic_container.h>
 #include <utils/../../beta/include/utils/containers/enable_disable_vector.h>
 #include <utils/tracking.h>
 
+#include <entt.h>
+#include <SFML/Graphics.hpp>
+
 #include "graphics/Window.h"
 #include "Object.h"
+
+#include "ecs/systems/move.h"
+#include "ecs/systems/draw.h"
+
 
 template<typename T>
 struct utils::container_emplace_helper<utils::enable_disable_vector, T>
@@ -64,6 +69,8 @@ namespace engine
 		friend class objects::Collide_discrete;
 
 		public:
+			entt::registry ecs_registry;
+
 			template <typename T, typename ...Args>
 			utils::tracking_ptr<T> create(Args&&... args)
 				{
@@ -78,6 +85,7 @@ namespace engine
 			void movement_step()
 				{
 				container.for_each_element_of_type<objects::Move>([](objects::Move& object) { object.movement_step(); });
+				iige::ecs::systems::move(*this);
 				}
 
 			void step()
@@ -87,10 +95,11 @@ namespace engine
 
 			void draw(graphics::Window& window, float interpolation)
 				{
-				window.sf_window.clear();
 				container.for_each_element_of_type<objects::Draw>([&](objects::Draw& object) { object.draw(window.sf_window, interpolation); });
 				//container.for_each_element_of_type<objects::Has_collision>([&](objects::Has_collision& object) { object.collider_ptr->draw(window.sf_window); });
-				window.sf_window.display();
+
+				//iige::ecs::systems::interpolate(*this, interpolation);
+				iige::ecs::systems::draw(*this, window.sf_window, interpolation);
 				}
 
 			void collisions()

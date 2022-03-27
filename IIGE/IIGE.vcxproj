@@ -17,13 +17,11 @@
   <ItemGroup>
     <ClInclude Include="engine\Collisions.h" />
     <ClInclude Include="engine\compile_settings.h" />
-    <ClInclude Include="engine\core\Euler.h" />
-    <ClInclude Include="engine\core\Quaternion.h" />
-    <ClInclude Include="engine\core\Transform2.h" />
-    <ClInclude Include="engine\core\Transform3.h" />
-    <ClInclude Include="engine\core\Vec.h" />
-    <ClInclude Include="engine\core\Vec2.h" />
-    <ClInclude Include="engine\core\Vec3.h" />
+    <ClInclude Include="engine\ecs\components\bad_draw.h" />
+    <ClInclude Include="engine\ecs\components\speed.h" />
+    <ClInclude Include="engine\ecs\components\transform.h" />
+    <ClInclude Include="engine\ecs\systems\draw.h" />
+    <ClInclude Include="engine\ecs\systems\move.h" />
     <ClInclude Include="engine\Events.h" />
     <ClInclude Include="engine\graphics\Window.h" />
     <ClInclude Include="engine\Loop.h" />
@@ -31,6 +29,7 @@
     <ClInclude Include="engine\resources_manager.h" />
     <ClInclude Include="engine\Scene.h" />
     <ClInclude Include="engine\Sceneold.h" />
+    <ClInclude Include="engine\sfml_interfacing\vec.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -67,11 +66,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;../../../Libraries/ENTT/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>../../../Libraries/SFML-2.5.1/include;../../../Libraries/CPP_Utilities/include;../../../Libraries/ENTT/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

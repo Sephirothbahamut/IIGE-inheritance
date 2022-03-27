@@ -43,11 +43,11 @@ namespace engine
 
 				while (window.is_open())
 					{
-					if (fps_clock.getElapsedTime() > sf::seconds(1))
+					/*if (fps_clock.getElapsedTime() > sf::seconds(1))
 						{
 						utils::globals::logger.log("FPS: " + std::to_string(frames_counter / fps_clock.restart().asSeconds()) + " with #" + std::to_string(scene.active_objects_count()) + " active objects.");
 						frames_counter = 0;
-						}
+						}*/
 					while (clock.getElapsedTime() > next_step_time && step_loops < max_frameskip)
 						{sf::Event event;
 						while (window.poll_event(event)) {}
@@ -63,7 +63,10 @@ namespace engine
 					interpolation = (clock.getElapsedTime() + fixed_delta_time - next_step_time) / fixed_delta_time;
 
 					frames_counter++;
+
+					//window.sf_window.clear();
 					scene.draw(window, interpolation);
+					//window.sf_window.display();
 					}
 				}
 		};
