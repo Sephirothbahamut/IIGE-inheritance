@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <array>
+#include <iostream>
 
 #include "utils/variadic.h"
 #include "utils/containers/Matrix.h"
@@ -284,7 +285,6 @@ int mainzx()
 	}
 */
 
-
 int main()
 	{
 	try
@@ -314,7 +314,7 @@ int main()
 		for (size_t i = 0; i < 10; i++)
 			{
 			auto entity{scene.ecs_registry.create()};
-			if (first != entt::null) { first = entity; }
+			if (first == entt::null) { first = entity; }
 			scene.ecs_registry.emplace<iige::ecs::components::transform>     (entity, t);
 			scene.ecs_registry.emplace<iige::ecs::components::speed>         (entity, utils::math::Transform2{.position{10.f, 0.f}});
 			scene.ecs_registry.emplace<iige::ecs::components::bad_draw>      (entity, 32.f);
