@@ -18,7 +18,7 @@
 #include <entt.h>
 //#include "Collider.h"
 
-namespace engine { template <typename ...Types> class Scene; }
+namespace engine { /*template <typename ...Types>*/ class Scene; }
 
 namespace engine::objects
 	{
@@ -26,7 +26,7 @@ namespace engine::objects
 
 	class Object : public utils::trackable
 		{
-		template <typename ...Types>
+		//template <typename ...Types>
 		friend class engine::Scene;
 		public:
 			utils::enable_disable state;

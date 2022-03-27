@@ -13,9 +13,6 @@
 #include "graphics/Window.h"
 #include "Object.h"
 
-#include "ecs/systems/move.h"
-#include "ecs/systems/draw.h"
-
 
 template<typename T>
 struct utils::container_emplace_helper<utils::enable_disable_vector, T>
@@ -39,7 +36,7 @@ namespace engine
 		class Collide_discrete;
 		}
 
-	template <typename ...Types>
+	//template <typename ...Types>
 	class Scene
 		{
 		//Genius sarah from #include discord channel:
@@ -71,35 +68,35 @@ namespace engine
 		public:
 			entt::registry ecs_registry;
 
-			template <typename T, typename ...Args>
+			/*template <typename T, typename ...Args>
 			utils::tracking_ptr<T> create(Args&&... args)
 				{
 				return {container.emplace<T>(std::forward<Args>(args)...)};
-				}
+				}*/
 
 			void update()
 				{
-				container.for_each_container([](auto& container) { container.update(); });
+				//container.for_each_container([](auto& container) { container.update(); });
 				}
 
 			void movement_step()
 				{
-				container.for_each_element_of_type<objects::Move>([](objects::Move& object) { object.movement_step(); });
-				iige::ecs::systems::move(*this);
+				//container.for_each_element_of_type<objects::Move>([](objects::Move& object) { object.movement_step(); });
+				//iige::ecs::systems::move(*this);
 				}
 
 			void step()
 				{
-				container.for_each_element_of_type<objects::Step>([](objects::Step& object) { object.step(); });
+				//container.for_each_element_of_type<objects::Step>([](objects::Step& object) { object.step(); });
 				}
 
 			void draw(graphics::Window& window, float interpolation)
 				{
-				container.for_each_element_of_type<objects::Draw>([&](objects::Draw& object) { object.draw(window.sf_window, interpolation); });
+				//container.for_each_element_of_type<objects::Draw>([&](objects::Draw& object) { object.draw(window.sf_window, interpolation); });
 				//container.for_each_element_of_type<objects::Has_collision>([&](objects::Has_collision& object) { object.collider_ptr->draw(window.sf_window); });
 
 				//iige::ecs::systems::interpolate(*this, interpolation);
-				iige::ecs::systems::draw(*this, window.sf_window, interpolation);
+				//iige::ecs::systems::draw(*this, window.sf_window, interpolation);
 				}
 
 			void collisions()
@@ -124,16 +121,16 @@ namespace engine
 					}*/
 				}
 
-			size_t active_objects_count() { return container.size(); }
+			size_t active_objects_count() { return /*container.size() + */ ecs_registry.size(); }
 
 		private:
 			// enable_disable vector takes a lambda to access the enable_disable state of its contained type
 			// polymorphic_container takes the parameters to pass to the container type it's using inside
-			utils::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
-				{
-				[](utils::polymorphic_value<objects::Object>& polyobj) -> utils::enable_disable& { return polyobj->state; },
-				(ignore_first<Types, void>(0), [](auto& object) -> utils::enable_disable& { return object.state; })...
-				};
+			//utils::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
+			//	{
+			//	[](utils::polymorphic_value<objects::Object>& polyobj) -> utils::enable_disable& { return polyobj->state; },
+			//	(ignore_first<Types, void>(0), [](auto& object) -> utils::enable_disable& { return object.state; })...
+			//	};
 		};
 
 	}

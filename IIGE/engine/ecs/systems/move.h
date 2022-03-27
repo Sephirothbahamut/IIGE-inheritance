@@ -13,8 +13,7 @@
 
 namespace iige::ecs::systems
 	{
-	template <typename Scene_t>
-	void move(Scene_t& scene)
+	void move(engine::Scene& scene)
 		{
 		auto movement_view{scene.ecs_registry.view<components::transform, components::speed, components::transform_next>()};
 
@@ -27,8 +26,8 @@ namespace iige::ecs::systems
 			transform.t = tmp.t;*/
 			});
 		}
-	template <typename Scene_t>
-	void interpolate(Scene_t& scene, float interpolation)
+	//template <typename Scene_t>
+	void interpolate(engine::Scene& scene, float interpolation)
 		{
 		auto movement_view{scene.ecs_registry.view<components::transform, components::transform_next, components::interpolated>()};
 

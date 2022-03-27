@@ -80,5 +80,14 @@
     <ClInclude Include="engine\sfml_interfacing\vec.h">
       <Filter>Modules\engine\sfml_interfacing</Filter>
     </ClInclude>
+    <ClInclude Include="engine\ecs\components\collides_with.h">
+      <Filter>Modules\engine\ECS\components</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\components\has_collision.h">
+      <Filter>Modules\engine\ECS\components</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ecs\systems\collision.h">
+      <Filter>Modules\engine\ECS\systems</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
