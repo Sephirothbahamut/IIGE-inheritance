@@ -17,14 +17,6 @@
   <ItemGroup>
     <ClInclude Include="engine\Collisions.h" />
     <ClInclude Include="engine\compile_settings.h" />
-    <ClInclude Include="engine\ecs\components\bad_draw.h" />
-    <ClInclude Include="engine\ecs\components\collides_with.h" />
-    <ClInclude Include="engine\ecs\components\has_collision.h" />
-    <ClInclude Include="engine\ecs\components\speed.h" />
-    <ClInclude Include="engine\ecs\components\transform.h" />
-    <ClInclude Include="engine\ecs\systems\collision.h" />
-    <ClInclude Include="engine\ecs\systems\draw.h" />
-    <ClInclude Include="engine\ecs\systems\move.h" />
     <ClInclude Include="engine\Events.h" />
     <ClInclude Include="engine\graphics\Window.h" />
     <ClInclude Include="engine\Loop.h" />
@@ -32,7 +24,6 @@
     <ClInclude Include="engine\resources_manager.h" />
     <ClInclude Include="engine\Scene.h" />
     <ClInclude Include="engine\Sceneold.h" />
-    <ClInclude Include="engine\sfml_interfacing\vec.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -18,7 +18,7 @@
 #include <entt.h>
 //#include "Collider.h"
 
-namespace engine { /*template <typename ...Types>*/ class Scene; }
+namespace engine { template <typename ...Types> class Scene; }
 
 namespace engine::objects
 	{
@@ -26,7 +26,7 @@ namespace engine::objects
 
 	class Object : public utils::trackable
 		{
-		//template <typename ...Types>
+		template <typename ...Types>
 		friend class engine::Scene;
 		public:
 			utils::enable_disable state;
@@ -37,11 +37,7 @@ namespace engine::objects
 			//Object(Object&& move) noexcept : state(move.state), utils::trackable(std::move(move)) { std::cout << "moved" << std::endl; }
 			//Object& operator=(Object&& move) noexcept { state = move.state; this->utils::trackable::operator=(std::move(move)); std::cout << "moved" << std::endl; return *this; }
 			
-			entt::entity get_entity() const noexcept { return _entity; }
-			__declspec(property(get=get_entity)) entt::entity entity;
-
 		private:
-			entt::entity _entity{entt::null};
 			virtual void this_function_is_only_here_to_make_the_type_polymorphic() {}
 		};
 
