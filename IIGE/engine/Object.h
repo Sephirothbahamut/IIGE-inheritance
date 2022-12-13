@@ -7,11 +7,11 @@
 #include <map>
 
 #include <utils/tracking.h>
-#include <utils/../../beta/include/utils/containers/vector_utils.h>
-#include <utils/../../beta/include/utils/containers/enable_disable_vector.h>
+#include <utils/../../CPP_Utilities_old/beta/include/utils/containers/vector_utils.h>
+#include <utils/../../CPP_Utilities_old/beta/include/utils/containers/enable_disable_vector.h>
 #include <utils/logger.h>
 
-#include <utils/math/Transform2.h>
+#include <utils/math/transform2.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -44,14 +44,14 @@ namespace engine::objects
 	class In_world
 		{
 		public:
-			utils::math::Transform2 transform{};
+			utils::math::transform2 transform{};
 		};
 
 	class Move : public virtual In_world
 		{
 		public:
-			utils::math::Transform2 transform_previous;
-			utils::math::Transform2 movement;
+			utils::math::transform2 transform_previous;
+			utils::math::transform2 movement;
 
 			void movement_step() { transform_previous = transform; transform += movement; }
 

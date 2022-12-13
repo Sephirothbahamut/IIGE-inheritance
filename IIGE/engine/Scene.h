@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include <utils/containers/polymorphic_container.h>
-#include <utils/../../beta/include/utils/containers/enable_disable_vector.h>
+#include <utils/../../CPP_Utilities_old/Beta/include/utils/containers/enable_disable_vector.h>
 #include <utils/tracking.h>
 
 #include <SFML/Graphics.hpp>
@@ -14,7 +14,7 @@
 
 
 template<typename T>
-struct utils::container_emplace_helper<utils::enable_disable_vector, T>
+struct utils::containers::container_emplace_helper<utils::enable_disable_vector, T>
 	{
 	template<typename... Args>
 	static T& emplace(utils::enable_disable_vector<T>& v, Args&&... args)
@@ -120,7 +120,7 @@ namespace engine
 		private:
 			// enable_disable vector takes a lambda to access the enable_disable state of its contained type
 			// polymorphic_container takes the parameters to pass to the container type it's using inside
-			utils::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
+			utils::containers::polymorphic_container<utils::enable_disable_vector, objects::Object, Types...> container
 				{
 				[](utils::polymorphic_value<objects::Object>& polyobj) -> utils::enable_disable& { return polyobj->state; },
 				(ignore_first<Types, void>(0), [](auto& object) -> utils::enable_disable& { return object.state; })...

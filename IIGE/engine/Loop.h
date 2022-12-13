@@ -66,9 +66,9 @@ namespace engine
 
 					frames_counter++;
 
-					//window.sf_window.clear();
+					window.sf_window.clear();
 					scene.draw(window, interpolation);
-					//window.sf_window.display();
+					window.sf_window.display();
 					}
 				}
 		};
